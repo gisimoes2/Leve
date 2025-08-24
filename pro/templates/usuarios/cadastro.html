@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Administrador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-green-50 flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-md bg-white shadow-md rounded-lg p-8">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-green-700">Leve Bem-Estar</h1>
+      <p class="text-gray-500">Cadastro de Administrador</p>
+    </div>
+    
+    <h2 class="text-xl font-semibold mb-2">Criar Conta</h2>
+    <p class="text-gray-500 mb-6">Cadastre-se como administrador para acessar o dashboard de resultados.</p>
+    
+    <form method="post" action="{% url 'home' %}">
+    {% csrf_token %}
+      <div>
+        <label class="block text-gray-700 mb-1">Nome Completo</label>
+        <input type="text" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500" placeholder="Seu nome completo">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">CPF</label>
+        <input type="text" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500" placeholder="000.000.000-00">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Senha</label>
+        <input type="password" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500" placeholder="Digite sua senha">
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Confirmar Senha</label>
+        <input type="password" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500" placeholder="Confirme sua senha">
+      </div>
+      <br>
+     <button type="submit" 
+        class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
+        Cadastrar
+    </button>
+</form>
+    
+    <p class="text-center mt-4 text-gray-600">
+      Já tem uma conta? <a href="login.html" class="text-green-600 font-medium">Faça login aqui</a>
+    </p>
+    <p class="text-center mt-2">
+      <a href="index.html" class="text-gray-500 text-sm">Voltar ao início</a>
+    </p>
+  </div>
+</body>
+</html>

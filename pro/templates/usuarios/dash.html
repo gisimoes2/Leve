@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Bem-Estar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-green-600">Dashboard de Bem-Estar</h1>
+            <p class="text-gray-500">Análise dos questionários de bem-estar no trabalho</p>
+        </div>
+        <div class="flex gap-4">
+            <button class="bg-white border border-gray-300 rounded px-4 py-2 hover:bg-gray-50">Exportar CSV</button>
+            <button class="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600">Sair</button>
+        </div>
+    </div>
+
+    <!-- Cards principais -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white shadow rounded-lg p-6 text-center">
+            <h2 class="text-sm font-medium text-gray-500 mb-2">Total de Respostas</h2>
+            <p class="text-3xl font-bold text-green-600">7</p>
+            <p class="text-gray-400 text-sm mt-1">colaboradores responderam</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6 text-center">
+            <h2 class="text-sm font-medium text-gray-500 mb-2">Satisfação Geral</h2>
+            <p class="text-3xl font-bold text-green-600">37.1%</p>
+            <p class="text-gray-400 text-sm mt-1">respostas positivas</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6 text-center">
+            <h2 class="text-sm font-medium text-gray-500 mb-2">Cargos Representados</h2>
+            <p class="text-3xl font-bold text-blue-600">4</p>
+            <p class="text-gray-400 text-sm mt-1">diferentes cargos</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6 text-center">
+            <h2 class="text-sm font-medium text-gray-500 mb-2">Locais de trabalho</h2>
+            <p class="text-3xl font-bold text-purple-600">3</p>
+            <p class="text-gray-400 text-sm mt-1">unidades participando</p>
+        </div>
+    </div>
+
+    <!-- Aba Demografia -->
+    <div class="bg-white shadow rounded-lg p-6 mb-8">
+        <h2 class="text-lg font-semibold mb-4">Demografia</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Respostas por Cargo -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-medium mb-2">Respostas por Cargo</h3>
+                <ul class="space-y-1 text-gray-700">
+                    <li class="flex justify-between"><span>Medico</span> <span class="bg-green-100 text-green-700 rounded-full px-2">3</span></li>
+                    <li class="flex justify-between"><span>Enfermeiro</span> <span class="bg-green-100 text-green-700 rounded-full px-2">2</span></li>
+                    <li class="flex justify-between"><span>Tecnico</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                    <li class="flex justify-between"><span>Administrativo</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                </ul>
+            </div>
+
+            <!-- Respostas por Localização -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-medium mb-2">Respostas por Localização</h3>
+                <ul class="space-y-1 text-gray-700">
+                    <li class="flex justify-between"><span>São Paulo</span> <span class="bg-green-100 text-green-700 rounded-full px-2">3</span></li>
+                    <li class="flex justify-between"><span>Rio de Janeiro</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                    <li class="flex justify-between"><span>Belo Horizonte</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                    <li class="flex justify-between"><span>Recife</span> <span class="bg-green-100 text-green-700 rounded-full px-2">2</span></li>
+                </ul>
+            </div>
+
+            <!-- Respostas por Hospital -->
+            <!-- <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-medium mb-2">Respostas por Hospital</h3>
+                <ul class="space-y-1 text-gray-700">
+                    <li class="flex justify-between"><span>Hospital A</span> <span class="bg-green-100 text-green-700 rounded-full px-2">5</span></li>
+                    <li class="flex justify-between"><span>Hospital B</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                    <li class="flex justify-between"><span>Hospital C</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
+                </ul>
+            </div> -->
+        </div>
+    </div>
+
+    <!-- Gráficos de exemplo -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Resultado por Pergunta x Cargo</h3>
+            <canvas id="graficoPerguntaCargo"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Resultado Geral x Lotação</h3>
+            <canvas id="graficoLotacao"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Escolaridade</h3>
+            <canvas id="graficoEscolaridade"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Sexo</h3>
+            <canvas id="graficoSexo"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Cargos</h3>
+            <canvas id="graficoCargos"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Tempo na Unicoop</h3>
+            <canvas id="graficoTempoUnicoop"></canvas>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-medium mb-2">Tempo no Cargo</h3>
+            <canvas id="graficoTempoCargo"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráficos de exemplo com dados fictícios
+    new Chart(document.getElementById('graficoPerguntaCargo'), {
+        type: 'bar',
+        data: { labels: ['Medico', 'Enfermeiro', 'Tecnico'], datasets: [{ label: 'Respostas Positivas', data: [3,2,1], backgroundColor: 'rgba(34,197,94,0.7)' }] }
+    });
+
+    new Chart(document.getElementById('graficoLotacao'), {
+        type: 'pie',
+        data: { labels: ['São Paulo','Rio de Janeiro','Recife'], datasets: [{ data: [3,1,2], backgroundColor: ['#22c55e','#3b82f6','#f59e0b'] }] }
+    });
+</script>
+
+</body>
+</html>

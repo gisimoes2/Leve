@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Leve Bem-Estar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <header class="flex items-center justify-between px-8 py-4 border-b bg-white">
+        <div class="flex items-center space-x-2">
+            <span class="text-green-600 text-xl">❤</span>
+            <span class="font-semibold text-green-600">Leve Bem-Estar</span>
+        </div>
+        <nav class="flex space-x-4">
+            <!-- <a href="#" class="text-sm text-gray-700 hover:text-green-600">Responder Questionário</a> -->
+            <!-- <a href="#" class="text-sm border px-4 py-1 rounded hover:bg-gray-100">Dashboard Administrativo</a> -->
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex flex-col items-center text-center py-20 px-6">
+        <h1 class="text-4xl font-bold text-green-700 mb-4">Bem-Estar no Trabalho</h1>
+        <p class="text-gray-600 max-w-xl mb-8">
+            Sua opinião é fundamental para criarmos um ambiente de trabalho mais saudável e acolhedor. 
+            Participe da nossa pesquisa de bem-estar e ajude a transformar o futuro do trabalho.
+        </p>
+        
+        <div class="flex space-x-4">
+           <!-- <a href="{% url 'questionario' %}" 
+   class="bg-green-600 text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2 hover:bg-green-700">
+    <span>❤</span>
+    <span>Responder Questionário</span>
+</a> -->
+
+
+            <a href="#" 
+               class="border px-6 py-3 rounded-md font-medium flex items-center space-x-2 hover:bg-gray-100">
+                <span>📊</span>
+                <span>Ver Resultados</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Por que participar -->
+    <section class="py-16 px-6 bg-gray-50 text-center">
+        <h2 class="text-2xl font-bold text-green-700 mb-2">Por que participar?</h2>
+        <p class="text-gray-600 mb-12">
+            Sua participação é essencial para melhorarmos o bem-estar no ambiente hospitalar
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Card 1 -->
+            <div class="bg-white shadow-md rounded-lg p-8">
+                <div class="text-green-600 text-3xl mb-4">🛡️</div>
+                <h3 class="text-lg font-semibold mb-2">Confidencial</h3>
+                <p class="text-gray-600">Suas respostas são completamente anônimas e confidenciais</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white shadow-md rounded-lg p-8">
+                <div class="text-green-600 text-3xl mb-4">📈</div>
+                <h3 class="text-lg font-semibold mb-2">Impacto Real</h3>
+                <p class="text-gray-600">Suas respostas influenciam diretamente as políticas de bem-estar</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white shadow-md rounded-lg p-8">
+                <div class="text-green-600 text-3xl mb-4">⏱️</div>
+                <h3 class="text-lg font-semibold mb-2">Rápido</h3>
+                <p class="text-gray-600">Leva apenas 5 minutos para completar o questionário</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
