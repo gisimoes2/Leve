@@ -29,8 +29,7 @@ class ColaboradorAdmin(admin.ModelAdmin):
     list_filter = ("is_active", "cargo", "local_trabalho")
 
     def get_local_trabalho(self, obj):
-        return obj.local_trabalho.nome if obj.local_trabalho else "-"
-    get_local_trabalho.short_description = "Localização"
+        return obj.local_trabalho or "-"
 
 
 
