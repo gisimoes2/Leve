@@ -16,6 +16,15 @@ def area(request):
 def responder(request):
     if request.method == "POST":
         cpf = request.POST.get("cpf", "").strip()
+
+        # if not re.fullmatch(r"\d{11}", cpf):  # precisa ter 11 dígitos
+        #     messages.error(request, "CPF inválido. Digite somente números (11 dígitos).")
+        #     return redirect("responder")
+
+        if RespostaPesquisa.objects.filter(cpf=cpf).exists():
+            messages.error(request, "Este CPF já respondeu ao questionário.")
+            return redirect("responder")
+        
         resposta1 = request.POST.get("resposta1", "").strip()
         resposta2 = request.POST.get("resposta2", "").strip()
         resposta2_descricao = request.POST.get("resposta2_descricao", "").strip()
@@ -46,7 +55,7 @@ def responder(request):
         )
 
         messages.success(request, "Obrigado! Suas respostas foram salvas.")
-        return redirect("conclusaoform.html")  # página de agradecimento
+        return redirect("conclusaoform")  # página de agradecimento
 
     # GET
     return render(request, "usuarios/responder.html")
@@ -64,7 +73,7 @@ from django.contrib import messages
 from .models import RespostaPesquisa
 
 def conclusaoform(request):
-    return render(request, "conclusao.html")
+    return render(request, "usuarios/conclusaoform.html")
 
 
 def cadastrar_colaborador(request):
