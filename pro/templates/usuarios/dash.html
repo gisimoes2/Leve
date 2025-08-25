@@ -3,131 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Bem-Estar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dashboard de Pesquisa de Clima</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            color: #6c757d;
+        }
+        .card .count {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .card .details {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            vertical-align: top;
+        }
+        thead {
+            background-color: #f1f1f1;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        details {
+            cursor: pointer;
+        }
+        summary {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .no-answers {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #6c757d;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body>
 
-<div class="p-6">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-green-600">Dashboard de Bem-Estar</h1>
-            <p class="text-gray-500">Análise dos questionários de bem-estar no trabalho</p>
+<div class="container">
+    <h1>Dashboard de Pesquisa de Clima</h1>
+
+    {% if total_respostas > 0 %}
+    <section class="summary-cards">
+        <div class="card">
+            <h3>Total de Respostas</h3>
+            <p class="count">{{ total_respostas }}</p>
         </div>
-        <div class="flex gap-4">
-            <button class="bg-white border border-gray-300 rounded px-4 py-2 hover:bg-gray-50">Exportar CSV</button>
-            <button class="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600">Sair</button>
+        <div class="card">
+            <h3>Sinais de Sobrecarga (P2)</h3>
+            <p class="details"><strong>Sim:</strong> {{ stats_r2.sim }} | <strong>Não:</strong> {{ stats_r2.nao }}</p>
         </div>
+        <div class="card">
+            <h3>Liderança e Saúde (P3)</h3>
+            <p class="details"><strong>Sim:</strong> {{ stats_r3.sim }} | <strong>Não:</strong> {{ stats_r3.nao }}</p>
+        </div>
+        <div class="card">
+            <h3>Impacto do Ambiente (P4)</h3>
+            <p class="details"><strong>Positivo:</strong> {{ stats_r4.positivo }} | <strong>Negativo:</strong> {{ stats_r4.negativo }}</p>
+        </div>
+    </section>
+
+    <h2>Respostas Detalhadas</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>CPF</th>
+                    <th>Data</th>
+                    <th>P1: Estresse/Insegurança</th>
+                    <th>P2: Sobrecarga</th>
+                    <th>P3: Liderança</th>
+                    <th>P4: Ambiente</th>
+                    <th>P5: Sugestões</th>
+                    <th>P6: Comentários</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resposta in respostas %}
+                <tr>
+                    <td>{{ resposta.cpf }}</td>
+                    <td>{{ resposta.data_resposta|date:"d/m/Y" }}</td>
+                    <td>{{ resposta.resposta1 }}</td>
+                    <td>
+                        <strong>{{ resposta.resposta2 }}</strong>
+                        {% if resposta.resposta2 == "Sim" %}
+                        <details>
+                            <summary>Ver Descrição</summary>
+                            <p>{{ resposta.resposta2_descricao }}</p>
+                        </details>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ resposta.resposta3 }}</strong>
+                        {% if resposta.resposta3 == "Sim" %}
+                        <details>
+                            <summary>Ver Descrição</summary>
+                            <p>{{ resposta.resposta3_descricao }}</p>
+                        </details>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ resposta.resposta4 }}</strong>
+                        <details>
+                            <summary>Ver Descrição</summary>
+                            <p>{{ resposta.resposta4_descricao }}</p>
+                        </details>
+                    </td>
+                    <td>{{ resposta.resposta5 }}</td>
+                    <td>{{ resposta.resposta6 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <!-- Cards principais -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white shadow rounded-lg p-6 text-center">
-            <h2 class="text-sm font-medium text-gray-500 mb-2">Total de Respostas</h2>
-            <p class="text-3xl font-bold text-green-600">7</p>
-            <p class="text-gray-400 text-sm mt-1">colaboradores responderam</p>
+    {% else %}
+        <div class="card no-answers">
+            <p>Ainda não há nenhuma resposta para exibir.</p>
         </div>
-        <div class="bg-white shadow rounded-lg p-6 text-center">
-            <h2 class="text-sm font-medium text-gray-500 mb-2">Satisfação Geral</h2>
-            <p class="text-3xl font-bold text-green-600">37.1%</p>
-            <p class="text-gray-400 text-sm mt-1">respostas positivas</p>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6 text-center">
-            <h2 class="text-sm font-medium text-gray-500 mb-2">Cargos Representados</h2>
-            <p class="text-3xl font-bold text-blue-600">4</p>
-            <p class="text-gray-400 text-sm mt-1">diferentes cargos</p>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6 text-center">
-            <h2 class="text-sm font-medium text-gray-500 mb-2">Locais de trabalho</h2>
-            <p class="text-3xl font-bold text-purple-600">3</p>
-            <p class="text-gray-400 text-sm mt-1">unidades participando</p>
-        </div>
-    </div>
-
-    <!-- Aba Demografia -->
-    <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4">Demografia</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Respostas por Cargo -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-medium mb-2">Respostas por Cargo</h3>
-                <ul class="space-y-1 text-gray-700">
-                    <li class="flex justify-between"><span>Medico</span> <span class="bg-green-100 text-green-700 rounded-full px-2">3</span></li>
-                    <li class="flex justify-between"><span>Enfermeiro</span> <span class="bg-green-100 text-green-700 rounded-full px-2">2</span></li>
-                    <li class="flex justify-between"><span>Tecnico</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                    <li class="flex justify-between"><span>Administrativo</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                </ul>
-            </div>
-
-            <!-- Respostas por Localização -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-medium mb-2">Respostas por Localização</h3>
-                <ul class="space-y-1 text-gray-700">
-                    <li class="flex justify-between"><span>São Paulo</span> <span class="bg-green-100 text-green-700 rounded-full px-2">3</span></li>
-                    <li class="flex justify-between"><span>Rio de Janeiro</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                    <li class="flex justify-between"><span>Belo Horizonte</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                    <li class="flex justify-between"><span>Recife</span> <span class="bg-green-100 text-green-700 rounded-full px-2">2</span></li>
-                </ul>
-            </div>
-
-            <!-- Respostas por Hospital -->
-            <!-- <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-medium mb-2">Respostas por Hospital</h3>
-                <ul class="space-y-1 text-gray-700">
-                    <li class="flex justify-between"><span>Hospital A</span> <span class="bg-green-100 text-green-700 rounded-full px-2">5</span></li>
-                    <li class="flex justify-between"><span>Hospital B</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                    <li class="flex justify-between"><span>Hospital C</span> <span class="bg-green-100 text-green-700 rounded-full px-2">1</span></li>
-                </ul>
-            </div> -->
-        </div>
-    </div>
-
-    <!-- Gráficos de exemplo -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Resultado por Pergunta x Cargo</h3>
-            <canvas id="graficoPerguntaCargo"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Resultado Geral x Lotação</h3>
-            <canvas id="graficoLotacao"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Escolaridade</h3>
-            <canvas id="graficoEscolaridade"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Sexo</h3>
-            <canvas id="graficoSexo"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Cargos</h3>
-            <canvas id="graficoCargos"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Tempo na Unicoop</h3>
-            <canvas id="graficoTempoUnicoop"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-medium mb-2">Tempo no Cargo</h3>
-            <canvas id="graficoTempoCargo"></canvas>
-        </div>
-    </div>
+    {% endif %}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Gráficos de exemplo com dados fictícios
-    new Chart(document.getElementById('graficoPerguntaCargo'), {
-        type: 'bar',
-        data: { labels: ['Medico', 'Enfermeiro', 'Tecnico'], datasets: [{ label: 'Respostas Positivas', data: [3,2,1], backgroundColor: 'rgba(34,197,94,0.7)' }] }
-    });
-
-    new Chart(document.getElementById('graficoLotacao'), {
-        type: 'pie',
-        data: { labels: ['São Paulo','Rio de Janeiro','Recife'], datasets: [{ data: [3,1,2], backgroundColor: ['#22c55e','#3b82f6','#f59e0b'] }] }
-    });
-</script>
 
 </body>
 </html>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import Colaborador
 from datetime import datetime
+from django.db.models import Count, Q
 
 # Create your views here.
 def home(request):
@@ -65,8 +66,43 @@ def cadastro(request):
 
 def login(request):
     return render(request, 'usuarios/login.html')
+
 def dash(request):
-    return render(request, "dash.html")
+    # 1. Busca todas as respostas, ordenando pelas mais recentes
+    respostas_list = RespostaPesquisa.objects.order_by('-data_resposta')
+
+    # 2. Calcula as estatísticas agregadas
+    total_respostas = respostas_list.count()
+
+    # Contagem para a Pergunta 2 (Sinais de sobrecarga)
+    stats_resposta2 = RespostaPesquisa.objects.aggregate(
+        sim=Count('pk', filter=Q(resposta2="Sim")),
+        nao=Count('pk', filter=Q(resposta2="Não"))
+    )
+
+    # Contagem para a Pergunta 3 (Liderança e saúde mental)
+    stats_resposta3 = RespostaPesquisa.objects.aggregate(
+        sim=Count('pk', filter=Q(resposta3="Sim")),
+        nao=Count('pk', filter=Q(resposta3="Não"))
+    )
+
+    # Contagem para a Pergunta 4 (Impacto do ambiente)
+    stats_resposta4 = RespostaPesquisa.objects.aggregate(
+        positivo=Count('pk', filter=Q(resposta4="Positivamente")),
+        negativo=Count('pk', filter=Q(resposta4="Negativamente"))
+    )
+
+    # 3. Monta o contexto para enviar ao template
+    context = {
+        'respostas': respostas_list,
+        'total_respostas': total_respostas,
+        'stats_r2': stats_resposta2,
+        'stats_r3': stats_resposta3,
+        'stats_r4': stats_resposta4,
+    }
+
+    # 4. Renderiza o template com todos os dados
+    return render(request, 'usuarios/dash.html', context)
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -132,9 +168,6 @@ def cadastrar_colaborador(request):
 
 #     # Se acessarem por GET, redirecione para a home (ou para o formulário)
 #     return redirect("home")
-
-# def dash(request):
-#     return render(request, 'usuarios/dash.html')
 
 
 
