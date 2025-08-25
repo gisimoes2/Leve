@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import Colaborador
+from datetime import datetime
 
 # Create your views here.
 def home(request):
@@ -11,7 +14,42 @@ def area(request):
     return render(request, 'usuarios/area.html')
 
 def responder(request):
-    return render(request, 'usuarios/responder.html')
+    if request.method == "POST":
+        cpf = request.POST.get("cpf", "").strip()
+        resposta1 = request.POST.get("resposta1", "").strip()
+        resposta2 = request.POST.get("resposta2", "").strip()
+        resposta2_descricao = request.POST.get("resposta2_descricao", "").strip()
+        resposta3 = request.POST.get("resposta3", "").strip()
+        resposta3_descricao = request.POST.get("resposta3_descricao", "").strip()
+        resposta4 = request.POST.get("resposta4", "").strip()
+        resposta4_descricao = request.POST.get("resposta4_descricao", "").strip()
+        resposta5 = request.POST.get("resposta5", "").strip()
+        resposta6 = request.POST.get("resposta6", "").strip()
+
+        # Valida se já existe um registro para este CPF
+        if RespostaPesquisa.objects.filter(cpf=cpf).exists():
+            messages.error(request, "Você já respondeu o questionário.")
+            return redirect("responder")
+
+        # Salva os dados no banco
+        RespostaPesquisa.objects.create(
+            cpf=cpf,
+            resposta1=resposta1,
+            resposta2=resposta2,
+            resposta2_descricao=resposta2_descricao if resposta2 == "Sim" else "",
+            resposta3=resposta3,
+            resposta3_descricao=resposta3_descricao if resposta3 == "Sim" else "",
+            resposta4=resposta4,
+            resposta4_descricao=resposta4_descricao,
+            resposta5=resposta5,
+            resposta6=resposta6,
+        )
+
+        messages.success(request, "Obrigado! Suas respostas foram salvas.")
+        return redirect("conclusaoform.html")  # página de agradecimento
+
+    # GET
+    return render(request, "usuarios/responder.html")
 
 def cadastro(request):
     return render(request, 'usuarios/cadastro.html')
@@ -26,61 +64,8 @@ from django.contrib import messages
 from .models import RespostaPesquisa
 
 def conclusaoform(request):
-    if request.method == "POST":
-        # 1) Coleta dos dados do formulário
-        dados = {
-            "cpf": request.POST.get("cpf", "").strip(),
-            "resposta1": request.POST.get("resposta1", "").strip(),
-            "pergunta2": request.POST.get("pergunta2"),
-            "resposta2": request.POST.get("resposta2", "").strip(),
-            "pergunta3": request.POST.get("pergunta3"),
-            "resposta3": request.POST.get("resposta3", "").strip(),
-            "pergunta4": request.POST.get("pergunta4"),
-            "resposta4": request.POST.get("resposta4", "").strip(),
-            "resposta5": request.POST.get("resposta5", "").strip(),
-            "resposta6": request.POST.get("resposta6", "").strip(),
-        }
+    return render(request, "conclusao.html")
 
-        # 2) Validações mínimas
-        erros = []
-        if not dados["cpf"]:
-            erros.append("Informe seu CPF.")
-        if not dados["resposta1"]:
-            erros.append("Responda a Pergunta 1.")
-        if dados["pergunta2"] not in ["Sim", "Não"]:
-            erros.append("Escolha uma opção na Pergunta 2.")
-        if dados["pergunta3"] not in ["Sim", "Não"]:
-            erros.append("Escolha uma opção na Pergunta 3.")
-        if dados["pergunta4"] not in ["Positivamente", "Negativamente"]:
-            erros.append("Escolha uma opção na Pergunta 4.")
-        if not dados["resposta5"]:
-            erros.append("Responda a Pergunta 5.")
-
-        # Validação extra: descrição obrigatória quando marcar "Sim"
-        if dados["pergunta2"] == "Sim" and not dados["resposta2"]:
-            erros.append("Descreva a Pergunta 2 (você marcou Sim).")
-        if dados["pergunta3"] == "Sim" and not dados["resposta3"]:
-            erros.append("Descreva a Pergunta 3 (você marcou Sim).")
-
-        # Se houver erros, volta para o formulário mostrando mensagens
-        if erros:
-            for e in erros:
-                messages.error(request, e)
-            return redirect(request.META.get("HTTP_REFERER", "/"))
-
-        # 3) Salva no banco
-        RespostaPesquisa.objects.create(**dados)
-
-        # 4) Renderiza página de agradecimento
-        return render(request, "conclusaoform.html")
-
-    # Se for GET, manda para a home (ou para o formulário)
-    return redirect("home")
-
-#view que salva o cadastro do usuario no banco de dados 
-from django.shortcuts import render, redirect
-from .models import Colaborador, Cargo, LocalTrabalho
-from datetime import datetime
 
 def cadastrar_colaborador(request):
     if request.method == "POST":
