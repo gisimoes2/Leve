@@ -24,9 +24,44 @@ class LocalTrabalhoAdmin(admin.ModelAdmin):
 # ---------- Admin para Colaborador ----------
 @admin.register(Colaborador)
 class ColaboradorAdmin(admin.ModelAdmin):
-    list_display = ('nome_completo', 'email', 'get_local_trabalho', 'cargo', 'is_active')
-    search_fields = ("nome_completo", "email", "cargo__nome", "local_trabalho__nome")
-    list_filter = ("is_active", "cargo", "local_trabalho")
+    list_display = (
+        'nome_completo',
+        'cpf',
+        'sexo',
+        'data_nascimento',
+        'email',
+        'escolaridade',
+        'estado_civil',
+        'cargo',
+        'cidade', 
+        'local_trabalho',
+        'tempo_unicoop',
+        'tempo_funcao',
+        'is_active'
+    )
+
+    list_display_links = (
+        'nome_completo',
+        'email'
+    )
+
+    list_filter = (
+        'is_active',
+        'cidade', 
+        'local_trabalho', 
+        'cargo', 
+        'sexo', 
+        'escolaridade'
+    )
+
+    search_fields = (
+        'nome_completo', 
+        'cpf', 
+        'email',
+        'cargo'
+    )
+
+    ordering = ('nome_completo',)
 
     def get_local_trabalho(self, obj):
         return obj.local_trabalho or "-"
