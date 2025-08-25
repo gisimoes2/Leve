@@ -28,9 +28,20 @@
         <!-- Informações Pessoais -->
         <h3 class="text-green-600 font-semibold mb-4">Informações Pessoais</h3>
         
-<form action="{% url 'cadastrar_colaborador' %}" method="post">
-    {% csrf_token %}            
-    <script src="https://unpkg.com/imask"></script>
+        <!-- BLOCO DE MENSAGENS -->
+        {% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li style="color: red;">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+        <!-- FIM DO BLOCO DE MENSAGENS -->
+
+        <form action="{% url 'cadastrar_colaborador' %}" method="post">
+            {% csrf_token %}            
+            <script src="https://unpkg.com/imask"></script>
 
             <!-- Grid dos campos -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,58 +104,56 @@
                 </div>
 
                 <div>
-    <label class="block text-gray-700 font-medium mb-1">Cargo</label>
-    <select name="cargo" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
-        <option value="">Selecione...</option>
-        <option value="Cuidador(a) de Idosos">Cuidador(a) de Idosos</option>
-        <option value="Enfermeiro(a)">Enfermeiro(a)</option>
-        <option value="Técnico(a) de Enfermagem">Técnico(a) de Enfermagem</option>
-        <option value="Copeira">Copeira</option>
-        <option value="Auxiliar de Higienização">Auxiliar de Higienização</option>
-        <option value="Auxiliar de Cozinha">Auxiliar de Cozinha</option>
-        <option value="Auxiliar de Farmácia">Auxiliar de Farmácia</option>
-        <option value="Farmacêutico(a)">Farmacêutico(a)</option>
-        <option value="Fisioterapeuta">Fisioterapeuta</option>
-    </select>
-</div>
-
+                    <label class="block text-gray-700 font-medium mb-1">Cargo</label>
+                    <select name="cargo" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                        <option value="">Selecione...</option>
+                        <option value="Cuidador(a) de Idosos">Cuidador(a) de Idosos</option>
+                        <option value="Enfermeiro(a)">Enfermeiro(a)</option>
+                        <option value="Técnico(a) de Enfermagem">Técnico(a) de Enfermagem</option>
+                        <option value="Copeira">Copeira</option>
+                        <option value="Auxiliar de Higienização">Auxiliar de Higienização</option>
+                        <option value="Auxiliar de Cozinha">Auxiliar de Cozinha</option>
+                        <option value="Auxiliar de Farmácia">Auxiliar de Farmácia</option>
+                        <option value="Farmacêutico(a)">Farmacêutico(a)</option>
+                        <option value="Fisioterapeuta">Fisioterapeuta</option>
+                    </select>
+                </div>
 
                 <div>
-    <label class="block text-gray-700 font-medium mb-1">Local de Trabalho</label>
-    <select name="local_trabalho" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
-        <option value="">Selecione...</option>
-        <option value="Hospital Santa Efigênia">Hospital Santa Efigênia</option>
-        <option value="Hospital Memorial Pernambuco">Hospital Memorial Pernambuco</option>
-        <option value="Hospital Memorial São Gabriel">Hospital Memorial São Gabriel</option>
-        <option value="Cemupe">Cemupe</option>
-        <option value="Clínica IMAX">Clínica IMAX</option>
-        <option value="Clínica Manoel Florêncio">Clínica Manoel Florêncio</option>
-        <option value="Clínica Multimagem">Clínica Multimagem</option>
-        <option value="Diagson">Diagson</option>
-        <option value="S.O.S Rim">S.O.S Rim</option>
-        <option value="Azzuro">Azzuro</option>
-        <option value="HOPE - CARUARU">HOPE - CARUARU</option>
-        <option value="SOCICLINICK - HOME CARE">SOCICLINICK - HOME CARE</option>
-        <option value="Hospital Albert Sabin">Hospital Albert Sabin</option>
-        <option value="TOP Imagem">TOP Imagem</option>
-        <option value="Home Care">Home Care</option>
-        <option value="Máxima Medicina do Trabalho">Máxima Medicina do Trabalho</option>
-        <option value="Espaço Varizes">Espaço Varizes</option>
-        <option value="G.E Clínicas">G.E Clínicas</option>
-        <option value="Home Care Pernambuco">Home Care Pernambuco</option>
-        <option value="Home Doctor">Home Doctor</option>
-        <option value="Hospital Albert Sabin">Hospital Albert Sabin</option>
-        <option value="ICIA">ICIA</option>
-        <option value="Instituto José Rocha de Sá">Instituto José Rocha de Sá</option>
-        <option value="Intensiva Day">Intensiva Day</option>
-        <option value="Laboratório Annalise">Laboratório Annalise</option>
-        <option value="NephronCare">NephronCare</option>
-        <option value="Clínica Viver Bem - Agrestina">Clínica Viver Bem - Agrestina</option>
-        <option value="CLÍNICA TERCEIRO PASSO">CLÍNICA TERCEIRO PASSO</option>
-        <option value="OK Doutor">OK Doutor</option>
-    </select>
-</div>
-
+                    <label class="block text-gray-700 font-medium mb-1">Local de Trabalho</label>
+                    <select name="local_trabalho" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                        <option value="">Selecione...</option>
+                        <option value="Hospital Santa Efigênia">Hospital Santa Efigênia</option>
+                        <option value="Hospital Memorial Pernambuco">Hospital Memorial Pernambuco</option>
+                        <option value="Hospital Memorial São Gabriel">Hospital Memorial São Gabriel</option>
+                        <option value="Cemupe">Cemupe</option>
+                        <option value="Clínica IMAX">Clínica IMAX</option>
+                        <option value="Clínica Manoel Florêncio">Clínica Manoel Florêncio</option>
+                        <option value="Clínica Multimagem">Clínica Multimagem</option>
+                        <option value="Diagson">Diagson</option>
+                        <option value="S.O.S Rim">S.O.S Rim</option>
+                        <option value="Azzuro">Azzuro</option>
+                        <option value="HOPE - CARUARU">HOPE - CARUARU</option>
+                        <option value="SOCICLINICK - HOME CARE">SOCICLINICK - HOME CARE</option>
+                        <option value="Hospital Albert Sabin">Hospital Albert Sabin</option>
+                        <option value="TOP Imagem">TOP Imagem</option>
+                        <option value="Home Care">Home Care</option>
+                        <option value="Máxima Medicina do Trabalho">Máxima Medicina do Trabalho</option>
+                        <option value="Espaço Varizes">Espaço Varizes</option>
+                        <option value="G.E Clínicas">G.E Clínicas</option>
+                        <option value="Home Care Pernambuco">Home Care Pernambuco</option>
+                        <option value="Home Doctor">Home Doctor</option>
+                        <option value="Hospital Albert Sabin">Hospital Albert Sabin</option>
+                        <option value="ICIA">ICIA</option>
+                        <option value="Instituto José Rocha de Sá">Instituto José Rocha de Sá</option>
+                        <option value="Intensiva Day">Intensiva Day</option>
+                        <option value="Laboratório Annalise">Laboratório Annalise</option>
+                        <option value="NephronCare">NephronCare</option>
+                        <option value="Clínica Viver Bem - Agrestina">Clínica Viver Bem - Agrestina</option>
+                        <option value="CLÍNICA TERCEIRO PASSO">CLÍNICA TERCEIRO PASSO</option>
+                        <option value="OK Doutor">OK Doutor</option>
+                    </select>
+                </div>
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Tempo na Unicoop</label>
@@ -169,40 +178,38 @@
                 </div>
 
                 <div>
-    <label class="block text-gray-700 font-medium mb-1">Cidade</label>
-    <select name="cidade" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
-        <option value="">Selecione...</option>
-        <option value="Maceió">Maceió</option>
-        <option value="Fortaleza">Fortaleza</option>
-        <option value="Campina Grande">Campina Grande</option>
-        <option value="João Pessoa">João Pessoa</option>
-        <option value="Bezerros">Bezerros</option>
-        <option value="Cabo de Santo Agostinho">Cabo de Santo Agostinho</option>
-        <option value="Camaragibe">Camaragibe</option>
-        <option value="Caruaru">Caruaru</option>
-        <option value="Garanhuns">Garanhuns</option>
-        <option value="Gravatá">Gravatá</option>
-        <option value="Jaboatão dos Guararapes">Jaboatão dos Guararapes</option>
-        <option value="Olinda">Olinda</option>
-        <option value="Recife">Recife</option>
-        <option value="Vitória de Santo Antão">Vitória de Santo Antão</option>
-        <option value="Bonito">Bonito</option>
-        <option value="Serra Talhada">Serra Talhada</option>
-        <option value="Arcoverde">Arcoverde</option>
-    </select>
-</div>
+                    <label class="block text-gray-700 font-medium mb-1">Cidade</label>
+                    <select name="cidade" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                        <option value="">Selecione...</option>
+                        <option value="Maceió">Maceió</option>
+                        <option value="Fortaleza">Fortaleza</option>
+                        <option value="Campina Grande">Campina Grande</option>
+                        <option value="João Pessoa">João Pessoa</option>
+                        <option value="Bezerros">Bezerros</option>
+                        <option value="Cabo de Santo Agostinho">Cabo de Santo Agostinho</option>
+                        <option value="Camaragibe">Camaragibe</option>
+                        <option value="Caruaru">Caruaru</option>
+                        <option value="Garanhuns">Garanhuns</option>
+                        <option value="Gravatá">Gravatá</option>
+                        <option value="Jaboatão dos Guararapes">Jaboatão dos Guararapes</option>
+                        <option value="Olinda">Olinda</option>
+                        <option value="Recife">Recife</option>
+                        <option value="Vitória de Santo Antão">Vitória de Santo Antão</option>
+                        <option value="Bonito">Bonito</option>
+                        <option value="Serra Talhada">Serra Talhada</option>
+                        <option value="Arcoverde">Arcoverde</option>
+                    </select>
+                </div>
 
             </div> <!-- fim da grid -->
 
             <!-- Botão dentro do form, mas fora da grid -->
-           <div class="text-center mt-10">
-        <button type="submit"
-            class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700">
-            Começar questionário
-        </button>
-    </div>
-</div>
-
+            <div class="text-center mt-10">
+                <button type="submit"
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700">
+                    Começar questionário
+                </button>
+            </div>
         </form>
     </main>
 
@@ -227,6 +234,5 @@
             }
         }
     </script>
-
 </body>
 </html>

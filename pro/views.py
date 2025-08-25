@@ -17,13 +17,9 @@ def responder(request):
     if request.method == "POST":
         cpf = request.POST.get("cpf", "").strip()
 
-        # if not re.fullmatch(r"\d{11}", cpf):  # precisa ter 11 dígitos
-        #     messages.error(request, "CPF inválido. Digite somente números (11 dígitos).")
-        #     return redirect("responder")
-
-        if RespostaPesquisa.objects.filter(cpf=cpf).exists():
-            messages.error(request, "Este CPF já respondeu ao questionário.")
-            return redirect("responder")
+        if Colaborador.objects.filter(cpf=cpf).exists():
+            messages.error(request, "❌ CPF já utilizado! Não é permitido responder novamente.")
+            return render(request, "usuarios/questionario.html", {"valores": request.POST})
         
         resposta1 = request.POST.get("resposta1", "").strip()
         resposta2 = request.POST.get("resposta2", "").strip()
@@ -36,9 +32,9 @@ def responder(request):
         resposta6 = request.POST.get("resposta6", "").strip()
 
         # Valida se já existe um registro para este CPF
-        if RespostaPesquisa.objects.filter(cpf=cpf).exists():
-            messages.error(request, "Você já respondeu o questionário.")
-            return redirect("responder")
+        # if RespostaPesquisa.objects.filter(cpf=cpf).exists():
+        #     messages.error(request, "Você já respondeu o questionário.")
+        #     return redirect("responder")
 
         # Salva os dados no banco
         RespostaPesquisa.objects.create(
