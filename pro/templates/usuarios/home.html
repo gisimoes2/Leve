@@ -1,94 +1,129 @@
 {% load static %}
 
+<style>
+  .bg-primaria { background-color: #038554; }
+  .bg-secundaria { background-color: #6e1370; }
+  .text-primaria { color: #038554; }
+  .text-secundaria { color: #b695c0; }
+  .bg-claro { background-color: #ecfdf4; }
+</style>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Leve Bem-Estar</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a2e0e6ad5b.js" crossorigin="anonymous"></script>
+
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar -->
-    <header class="flex items-center justify-between px-8 py-4 border-b bg-white">
-        <div class="flex items-center space-x-2">
-            <span class="text-green-600 text-xl">❤</span>
-            <span class="font-semibold text-green-600">Leve Bem-Estar</span>
-        </div>
-    <div class="flex items-center space-x-4">
-      <!-- Cadastro -->
-      <a href="{% url 'cadastro' %}" 
-         class="text-gray-700 font-medium hover:text-green-600">
-         Cadastro
-      </a>
+   <!-- Navbar -->
+<header class="flex items-center justify-between px-8 py-4 border-b bg-white">
+  
+  <!-- Logo + Texto -->
+  <div class="flex items-center space-x-2">
+    <img src="{% static 'img/logo.jpeg' %}" alt="Leve Gestão Humanizada" class="h-12">
+    <span class="font-semibold text-green-600">Leve Bem-Estar</span>
+  </div>
 
-      <!-- Login -->
-      <a href="{% url 'login' %}" 
-         class="px-4 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100">
-         Login
-      </a>
+  <!-- Links -->
+  <!-- <div class="flex items-center space-x-4">
+    Cadastro -->
+    <!-- <a href="{% url 'cadastro' %}" 
+       class="text-gray-700 font-medium hover:text-green-600">
+       Cadastro
+    </a> --> 
 
-    </div>
+    <!-- Login -->
+    <a href="{% url 'login' %}" 
+       class="px-4 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100">
+       Login Admin
+    </a>
+  </div>
 
-    </header>
+</header>
+
 
     <!-- Hero Section -->
     <main class="flex flex-col items-center text-center py-20 px-6">
-        <h1 class="text-4xl font-bold text-green-700 mb-4">Saúde Mental e Bem-Estar no Trabalho</h1>
-        <p class="text-gray-600 max-w-xl mb-8">
+        <h1 class="text-4xl font-bold text-green-700 mb-4 text-primaria">Saúde Mental e Bem-Estar no Trabalho</h1>
+        <p class="text-gray-600 max-w-xl mb-8 text-primaria">
             Sua opinião é fundamental para criarmos um ambiente de trabalho mais seguro, saudável e em conformidade com a NR 1. 
             Participe da nossa pesquisa sobre riscos psicossociais e ajude
             a identificar fatores que impactam o seu bem-estar no trabalho.
         </p>
         
         <div class="flex space-x-4">
-           <a href="{% url 'questionario' %}" 
-   class="bg-green-600 text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2 hover:bg-green-700">
-    <span>❤</span>
-    <span>Responder Questionário</span>
+           <a href="{% url 'questionario' %}" class="text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2"
+style="background-color:#038554;"> 
+<img src="{% static 'img/heart.png' %}" alt="escudo" class="h-8">
+      <span>Responder Questionário</span>
 </a>
-
-
-            <!-- <a href="#" 
-               class="border px-6 py-3 rounded-md font-medium flex items-center space-x-2 hover:bg-gray-100">
-                <span>📊</span>
-                <span>Ver Resultados</span>
-            </a> -->
+            
         </div>
     </main>
 
     <!-- Por que participar -->
     <section class="py-16 px-6 bg-gray-50 text-center">
-        <h2 class="text-2xl font-bold text-green-700 mb-2">Por que participar?</h2>
-        <p class="text-gray-600 mb-12">
-            Participar da pesquisa de avaliação dos riscos psicossociais é uma etapa essencial para o Gerenciamento de Riscos no Trabalho 
-            e depende da sua percepção para ser eficaz.
-        </p>
+    <h2 class="text-2xl font-bold text-green-700 mb-2">Por que participar?</h2>
+    <p class="text-gray-600 mb-12">
+        Participar da pesquisa de avaliação dos riscos psicossociais é uma etapa essencial para o Gerenciamento de Riscos no Trabalho 
+        e depende da sua percepção para ser eficaz.
+    </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <!-- Card 1 -->
-            <div class="bg-white shadow-md rounded-lg p-8">
-                <div class="text-green-600 text-3xl mb-4">🛡️</div>
-                <h3 class="text-lg font-semibold mb-2">Confidencial</h3>
-                <p class="text-gray-600">Suas respostas serão tratadas com sigilo e segurança nos termos da LGPD (Lei nº 13.709/2018)</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Card 1 -->
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <div class="flex justify-center mb-4">
+                <img src="{% static 'img/shield (2).png' %}" alt="escudo" class="h-12">
             </div>
+            <h3 class="text-lg font-semibold mb-2">Confidencial</h3>
+            <p class="text-gray-600">Suas respostas serão tratadas com sigilo e segurança nos termos da LGPD (Lei nº 13.709/2018)</p>
+        </div>
 
-            <!-- Card 2 -->
-            <div class="bg-white shadow-md rounded-lg p-8">
-                <div class="text-green-600 text-3xl mb-4">📈</div>
-                <h3 class="text-lg font-semibold mb-2">Impacto Real</h3>
-                <p class="text-gray-600">Suas respostas influenciam diretamente as políticas de bem-estar</p>
+        <!-- Card 2 -->
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <div class="flex justify-center mb-4">
+                <img src="{% static 'img/graph.png' %}" alt="gráfico" class="h-12">
             </div>
+            <h3 class="text-lg font-semibold mb-2">Impacto Real</h3>
+            <p class="text-gray-600">Suas respostas influenciam diretamente as políticas de bem-estar</p>
+        </div>
 
-            <!-- Card 3 -->
-            <div class="bg-white shadow-md rounded-lg p-8">
-                <div class="text-green-600 text-3xl mb-4">⏱️</div>
-                <h3 class="text-lg font-semibold mb-2">Rápido</h3>
-                <p class="text-gray-600">Leva apenas 5 minutos para completar o questionário</p>
+        <!-- Card 3 -->
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <div class="flex justify-center mb-4">
+                <img src="{% static 'img/time.png' %}" alt="tempo" class="h-12">
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Rápido</h3>
+            <p class="text-gray-600">Leva apenas 5 minutos para completar o questionário</p>
+        </div>
+    </div>
+</section>
+<!-- Font Awesome -->
+
+<footer class="text-white text-center py-6 mt-12" style="background-color:#038554;">
+        <div class="flex flex-col items-center">
+            <span class="font-semibold">Leve Bem-Estar</span>
+            <p class="text-sm mt-1">CNPJ 37.704.847/0001-67 2. 
+            <br>Informações de contato e mídias: Dúvidas? Fale conosco! </p>
+        <div class="flex space-x-6 mt-4">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/+5581987344820" target="_blank" class="hover:text-gray-200 text-xl">
+                    <img src="{% static 'img/whatsapp.png' %}" alt="WhatsApp" class="h-8 hover:opacity-80"></a>
+                <!-- Instagram -->
+                <a href="https://instagram.com/levegestaohs" target="_blank" class="hover:text-gray-200 text-xl">
+                    <img src="{% static 'img/instagram.png' %}" alt="Instagram" class="h-8 hover:opacity-80">
+                </a>
+                <!-- E-mail -->
+                <a href="leve@humanassaude.com.br" class="hover:text-gray-200 text-xl">
+                    <img src="{% static 'img/gmail.png' %}" alt="Email" class="h-8 hover:opacity-80">
+                </a>
             </div>
         </div>
-    </section>
-    
+</footer>
 
 
 </body>

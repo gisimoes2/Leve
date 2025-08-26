@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,8 +12,8 @@
     <!-- Header -->
     <header class="text-center py-10">
         <div class="flex justify-center items-center space-x-2 mb-2">
-            <span class="text-green-600 text-3xl">❤</span>
-            <h1 class="text-3xl font-bold text-green-700">Pesquisa de Bem-Estar</h1>
+        <img src="{% static 'img/heart.png' %}" alt="escudo" class="h-8">          
+         <h1 class="text-3xl font-bold text-green-700">Pesquisa de Bem-Estar</h1>
         </div>
         <p class="text-gray-600 max-w-2xl mx-auto">
             Sua opinião é fundamental para criarmos um ambiente de trabalho mais saudável e acolhedor.
@@ -22,20 +24,14 @@
     <main class="max-w-4xl mx-auto bg-white rounded-lg shadow p-10">
         <h2 class="text-xl font-bold mb-1">Questionário de Saúde Mental e Bem-Estar no Trabalho</h2>
         <p class="text-gray-600 mb-8 text-sm">
-            Por favor, insira os seus dados. 
+            Por favor, insira os  todos os seus dados. 
         </p>
 
         <!-- Informações Pessoais -->
         <h3 class="text-green-600 font-semibold mb-4">Informações Pessoais</h3>
         
         <!-- BLOCO DE MENSAGENS -->
-        {% if messages %}
-  <ul>
-    {% for message in messages %}
-      <li style="color: red;">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
+       
 
         <!-- FIM DO BLOCO DE MENSAGENS -->
 
@@ -59,7 +55,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Sexo</label>
-                    <select name="sexo" 
+                    <select name="sexo" required
                             class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="F">Feminino</option>
@@ -83,7 +79,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Escolaridade</label>
-                    <select name="escolaridade" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="escolaridade"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="medio">Até Ensino Médio</option>
                         <option value="sup_inc">Superior Incompleto</option>
@@ -94,7 +90,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Estado Civil</label>
-                    <select name="estado_civil" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="estado_civil"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="solteiro">Solteiro(a)</option>
                         <option value="casado">Casado(a) / União Estável</option>
@@ -105,7 +101,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Cargo</label>
-                    <select name="cargo" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="cargo" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Cuidador(a) de Idosos">Cuidador(a) de Idosos</option>
                         <option value="Enfermeiro(a)">Enfermeiro(a)</option>
@@ -121,7 +117,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Local de Trabalho</label>
-                    <select name="local_trabalho" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="local_trabalho" required  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Hospital Santa Efigênia">Hospital Santa Efigênia</option>
                         <option value="Hospital Memorial Pernambuco">Hospital Memorial Pernambuco</option>
@@ -157,7 +153,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Tempo na Unicoop</label>
-                    <select name="tempo_unicoop" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="tempo_unicoop" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
                         <option value="6a2">6 meses a 2 anos</option>
@@ -168,7 +164,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Tempo na função atual</label>
-                    <select name="tempo_funcao" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="tempo_funcao" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
                         <option value="6a2">6 meses a 2 anos</option>
@@ -179,7 +175,7 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Cidade</label>
-                    <select name="cidade" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <select name="cidade" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Maceió">Maceió</option>
                         <option value="Fortaleza">Fortaleza</option>
@@ -222,6 +218,10 @@
         // Máscara para Data (DD/MM/AAAA)
         IMask(document.getElementById('nascimento'), {
             mask: '00/00/0000'
+        });
+
+        IMask(document.getElementById('email'), {
+            mask: '/^\S*@?\S*$/'
         });
 
         // Função toggleResposta
