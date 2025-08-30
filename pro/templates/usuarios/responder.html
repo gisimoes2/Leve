@@ -40,7 +40,7 @@ avaliação que você faz do seu ambiente de trabalho.
 
   <!-- CPF -->
   <div class="mb-3">
-    <label class="block font-medium text-gray-700 mb-2 text-left">CPF</label>
+    <label class="block font-medium text-gray-700 mb-2 text-left">CPF<br> *Coloque seu CPF novamente para que as respostas sejam atreladas a ele</label>
     <input type="text" id="cpf" name="cpf" required placeholder="Digite seu CPF"
       value="{{ cpf }}"
       class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
@@ -121,7 +121,7 @@ function toggleTextareaRequired(id, required) {
 
   <!-- Botão -->
   <button type="submit"
-    class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
+    class="text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2"style="background-color:#038554;">
     Enviar Questionário
   </button>
 </form>

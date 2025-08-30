@@ -193,7 +193,7 @@ def exportar_csv(request):
     # Cabeçalho do CSV
     writer.writerow([
         'CPF', 'Nome', 'Sexo','Escolaridade','Dt.Nasc','Cargo', 
-        'Local de trabalho','T.UNICOOP','T.func Atual','Cidade', 'Data',
+        'Local de trabalho','T.UNICOOP','T.func Atual','Cidade', 'Data Resp',
         'P1: Estresse/Insegurança',
         'P2: Sobrecarga', 'P2 Descrição',
         'P3: Liderança', 'P3 Descrição',
@@ -211,8 +211,14 @@ def exportar_csv(request):
         writer.writerow([
             r.cpf,
             colaborador.nome_completo if colaborador else "-",
+            colaborador.sexo if colaborador else "-",
+            colaborador.escolaridade if colaborador else "-",
+            colaborador.data_nascimento if colaborador else "-",
             colaborador.cargo if colaborador else "-",
             colaborador.local_trabalho if colaborador else "-",
+            colaborador.tempo_unicoop if colaborador else "-",
+            colaborador.tempo_funcao if colaborador else "-",
+            colaborador.cidade if colaborador else "-",
             r.data_resposta.strftime("%d/%m/%Y") if r.data_resposta else "",
             r.resposta1,
             r.resposta2,

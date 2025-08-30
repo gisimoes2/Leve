@@ -1,5 +1,14 @@
 {% load static %}
 
+
+<style>
+  .bg-primaria { background-color: #038554; }
+  .bg-secundaria { background-color: #6e1370; }
+  .text-primaria { color: #038554; }
+  .text-secundaria { color: #b695c0; }
+  .bg-claro { background-color: #ecfdf4; }
+</style>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,7 +21,6 @@
     <!-- Header -->
     <header class="text-center py-10">
         <div class="flex justify-center items-center space-x-2 mb-2">
-        <img src="{% static 'img/heart.png' %}" alt="escudo" class="h-8">          
          <h1 class="text-3xl font-bold text-green-700">Pesquisa de Bem-Estar</h1>
         </div>
         <p class="text-gray-600 max-w-2xl mx-auto">
@@ -42,19 +50,19 @@
             <!-- Grid dos campos -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Nome</label>
+                    <label class="block text-gray-700 font-medium mb-1">Nome *</label>
                     <input id="nome" type="text" name="nome_completo" placeholder="Digite seu nome" required
                             class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                 </div>  
                 <!-- Nome -->
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">CPF</label>
+                    <label class="block text-gray-700 font-medium mb-1">CPF *</label>
                     <input id="cpf" type="text" name="cpf" placeholder="Digite seu CPF" required
                             class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                 </div>  
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Sexo</label>
+                    <label class="block text-gray-700 font-medium mb-1">Sexo *</label>
                     <select name="sexo" required
                             class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
@@ -65,20 +73,20 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Data de nascimento</label>
+                    <label class="block text-gray-700 font-medium mb-1">Data de nascimento *</label>
                     <input id="nascimento" type="text" name="nascimento" placeholder="Digite sua data de nascimento" required
                             class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                 </div>
             
                 <!-- E-mail -->
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">E-mail</label>
+                    <label class="block text-gray-700 font-medium mb-1">E-mail *</label>
                     <input type="email" name="email" placeholder="seu.email@hospital.com" required
                         class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Escolaridade</label>
+                    <label class="block text-gray-700 font-medium mb-1">Escolaridade *</label>
                     <select name="escolaridade"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="medio">Até Ensino Médio</option>
@@ -89,7 +97,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Estado Civil</label>
+                    <label class="block text-gray-700 font-medium mb-1">Estado Civil *</label>
                     <select name="estado_civil"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="solteiro">Solteiro(a)</option>
@@ -100,7 +108,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Cargo</label>
+                    <label class="block text-gray-700 font-medium mb-1">Cargo *</label>
                     <select name="cargo" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Cuidador(a) de Idosos">Cuidador(a) de Idosos</option>
@@ -116,7 +124,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Local de Trabalho</label>
+                    <label class="block text-gray-700 font-medium mb-1">Local de Trabalho *</label>
                     <select name="local_trabalho" required  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Hospital Santa Efigênia">Hospital Santa Efigênia</option>
@@ -152,7 +160,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Tempo na Unicoop</label>
+                    <label class="block text-gray-700 font-medium mb-1">Tempo na Unicoop *</label>
                     <select name="tempo_unicoop" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
@@ -163,7 +171,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Tempo na função atual</label>
+                    <label class="block text-gray-700 font-medium mb-1">Tempo na função atual *</label>
                     <select name="tempo_funcao" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
@@ -174,7 +182,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Cidade</label>
+                    <label class="block text-gray-700 font-medium mb-1">Cidade *</label>
                     <select name="cidade" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
                         <option value="Maceió">Maceió</option>
@@ -202,7 +210,7 @@
             <!-- Botão dentro do form, mas fora da grid -->
             <div class="text-center mt-10">
                 <button type="submit"
-                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700">
+                    class="text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2"style="background-color:#038554;">
                     Começar questionário
                 </button>
             </div>
