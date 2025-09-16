@@ -47,7 +47,7 @@ def responder(request):
             resposta2=resposta2,
             resposta2_descricao=resposta2_descricao if resposta2 == "Sim" else "",
             resposta3=resposta3,
-            resposta3_descricao=resposta3_descricao if resposta3 == "Sim" else "",
+            resposta3_descricao=resposta3_descricao if resposta3 == "Não" else "",
             resposta4=resposta4,
             resposta4_descricao=resposta4_descricao,
             resposta5=resposta5,
@@ -68,20 +68,65 @@ def login(request):
 
 def dash(request):
     # 1. Busca todas as respostas, ordenando pelas mais recentes
+    f_cargo  = (request.GET.get("cargo") or "").strip()
+    f_local  = (request.GET.get("local_trabalho") or "").strip()
+    f_cidade = (request.GET.get("cidade") or "").strip()
+    f_p2 = (request.GET.get("p2") or "").strip()
+    f_p3 = (request.GET.get("p3") or "").strip()
+    f_p4 = (request.GET.get("p4") or "").strip()
+
     respostas_list = RespostaPesquisa.objects.order_by('-data_resposta')
     
+    col_qs = Colaborador.objects.all()
+    if f_cargo:
+        col_qs = col_qs.filter(cargo=f_cargo)
+    if f_local:
+        col_qs = col_qs.filter(local_trabalho=f_local)
+    if f_cidade:
+        col_qs = col_qs.filter(cidade=f_cidade)
+
+    if f_cargo or f_local or f_cidade:
+        cpfs_filtrados = list(col_qs.values_list('cpf', flat=True))
+        respostas_list = respostas_list.filter(cpf__in=cpfs_filtrados)
+
     colaboradores = {c.cpf: c for c in Colaborador.objects.all()}
 
-    
+    if f_p2:
+        respostas_list = respostas_list.filter(resposta2=f_p2)
 
-# Cria um atributo extra em cada resposta
+    if f_p3:
+        respostas_list = respostas_list.filter(resposta3=f_p3)
+
+    if f_p4:
+        respostas_list = respostas_list.filter(resposta4=f_p4)
+
+    # Cria um atributo extra em cada resposta
     for r in respostas_list:
         r.colaborador = colaboradores.get(r.cpf)
 
+    # 🔹 Ajustado: garantir valores únicos sem duplicar lógica
+    cargos = sorted(set(
+        (c or "").strip()
+        for c in Colaborador.objects.values_list("cargo", flat=True)
+        if c and c.strip()
+    ))
+
+    locais = sorted(set(
+        (l or "").strip()
+        for l in Colaborador.objects.values_list("local_trabalho", flat=True)
+        if l and l.strip()
+    ))
+
+    cidades = sorted(set(
+        (ci or "").strip()
+        for ci in Colaborador.objects.values_list("cidade", flat=True)
+        if ci and ci.strip()
+    ))
+
     # 2. Calcula as estatísticas agregadas
     total_respostas = respostas_list.count()
-    # total_cargo = cargo_list.count()
-    # total_local = local_list.count()
+    total_cargo = Colaborador.objects.values("cargo").distinct().count()
+    total_local = Colaborador.objects.values("local_trabalho").distinct().count()
 
     # Contagem para a Pergunta 2 (Sinais de sobrecarga)
     stats_resposta2 = RespostaPesquisa.objects.aggregate(
@@ -105,16 +150,25 @@ def dash(request):
     context = {
         'respostas': respostas_list,
         'total_respostas': total_respostas,
+        'total_cargo': total_cargo,
+        'total_local': total_local,
+        'cargos': cargos,
+        'locais': locais,
+        'cidades': cidades,
         'stats_r2': stats_resposta2,
         'stats_r3': stats_resposta3,
         'stats_r4': stats_resposta4,
-       
+        'f_cargo': f_cargo,
+        'f_local': f_local,
+        'f_cidade': f_cidade,
+        'f_p2': f_p2,
+        'f_p3': f_p3,
+        'f_p4': f_p4,
     }
-
-    
 
     # 4. Renderiza o template com todos os dados
     return render(request, 'usuarios/dash.html', context)
+
 
 
 from django.shortcuts import render, redirect

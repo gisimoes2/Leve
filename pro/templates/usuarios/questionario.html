@@ -28,6 +28,9 @@
         </p>
     </header>
 
+    
+
+
     <!-- Formulário -->
     <main class="max-w-4xl mx-auto bg-white rounded-lg shadow p-10">
         <h2 class="text-xl font-bold mb-1">Questionário de Saúde Mental e Bem-Estar no Trabalho</h2>
@@ -39,7 +42,13 @@
         <h3 class="text-green-600 font-semibold mb-4">Informações Pessoais</h3>
         
         <!-- BLOCO DE MENSAGENS -->
-       
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
         <!-- FIM DO BLOCO DE MENSAGENS -->
 
@@ -111,15 +120,20 @@
                     <label class="block text-gray-700 font-medium mb-1">Cargo *</label>
                     <select name="cargo" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                         <option value="">Selecione...</option>
-                        <option value="Cuidador(a) de Idosos">Cuidador(a) de Idosos</option>
+                        <option value="Cuidador(a)">Cuidador(a)</option>
                         <option value="Enfermeiro(a)">Enfermeiro(a)</option>
                         <option value="Técnico(a) de Enfermagem">Técnico(a) de Enfermagem</option>
-                        <option value="Copeira">Copeira</option>
+                        <option value="Técnico(a) de Radiologia">Técnico(a) de Radiologia</option>
+                        <option value="Maqueiro(a)">Maqueiro(a)</option>
+                        <option value="Assistente Administrativo(a)">Assistente Administrativo(a)</option>
                         <option value="Auxiliar de Higienização">Auxiliar de Higienização</option>
-                        <option value="Auxiliar de Cozinha">Auxiliar de Cozinha</option>
                         <option value="Auxiliar de Farmácia">Auxiliar de Farmácia</option>
-                        <option value="Farmacêutico(a)">Farmacêutico(a)</option>
-                        <option value="Fisioterapeuta">Fisioterapeuta</option>
+                        <option value="Auxiliar de Manutenção">Auxiliar de Manutenção</option>
+                        <option value="Gestor Administrativo(a)">Gestor Administrativo(a)</option>
+                        <option value="Vice Presidente Administrativo(a)">Vice Presidente Administrativo(a)</option>
+                        <option value="Diretor(a)">Diretor(a) </option>
+                        <option value="Atendimental ao Cooperado">Atendimental ao Cooperado </option>
+                        <option value="Gestor(a) Financeiro">Gestor(a) Financeiro </option>
                     </select>
                 </div>
 
@@ -202,6 +216,7 @@
                         <option value="Bonito">Bonito</option>
                         <option value="Serra Talhada">Serra Talhada</option>
                         <option value="Arcoverde">Arcoverde</option>
+
                     </select>
                 </div>
 

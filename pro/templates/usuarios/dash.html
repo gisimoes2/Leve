@@ -123,19 +123,28 @@
             color: var(--primary);
         }
 
-        .table-container {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-        }
+       .table-container {
+            max-height: 500px;      /* altura máxima da área */
+            overflow-y: auto;       /* scroll vertical */
+            overflow-x: auto;       /* scroll horizontal se precisar */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+        .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* força todas as colunas a respeitarem os limites */
+}
+
+
+/* Cabeçalho fixo */
+.table-container thead th {
+    position: sticky;
+    top: 0;
+    background: #f8f8f8;
+    z-index: 2;
+}
 
         thead {
             background: #f8f9fa;
@@ -253,6 +262,8 @@
         display: block;
     }
 
+    
+
     </style>
 </head>
 <body>
@@ -267,14 +278,14 @@
             <h3>Total de Respostas</h3>
             <p class="count">{{ total_respostas }}</p>
         </div>
-        <!-- <div class="card">
+       <div class="card">
             <h3>Total de Cargos</h3>
             <p class="count">{{ total_cargo }}</p>
         </div>
         <div class="card">
-            <h3>Total de Cargos</h3>
-            <p class="count">{{ total_local }}</p>
-        </div> -->
+        <h3>Total de Locais de Trabalho</h3>
+        <p class="count">{{ total_local }}</p>
+        </div>
         <div class="card">
             <h3>Sinais de Sobrecarga (P2)</h3>
             <p class="details"><strong>Sim:</strong> {{ stats_r2.sim }} | <strong>Não:</strong> {{ stats_r2.nao }}</p>
@@ -288,61 +299,62 @@
             <p class="details"><strong>Positivo:</strong> {{ stats_r4.positivo }} | <strong>Negativo:</strong> {{ stats_r4.negativo }}</p>
         </div>
     </section>
+
     <h2>Distribuição de Respostas (P2, P3 e P4)</h2>
-<canvas id="graficoDistribuicao" width="600" height="300"></canvas>
+    <canvas id="graficoDistribuicao" width="600" height="300"></canvas>
 
-{# injeta os dicionários como JSON seguro no DOM #}
-{{ stats_r2|json_script:"js-stats-r2" }}
-{{ stats_r3|json_script:"js-stats-r3" }}
-{{ stats_r4|json_script:"js-stats-r4" }}
+    {# injeta os dicionários como JSON seguro no DOM #}
+    {{ stats_r2|json_script:"js-stats-r2" }}
+    {{ stats_r3|json_script:"js-stats-r3" }}
+    {{ stats_r4|json_script:"js-stats-r4" }}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  try {
-    const r2 = JSON.parse(document.getElementById("js-stats-r2").textContent || "{}");
-    const r3 = JSON.parse(document.getElementById("js-stats-r3").textContent || "{}");
-    const r4 = JSON.parse(document.getElementById("js-stats-r4").textContent || "{}");
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    try {
+        const r2 = JSON.parse(document.getElementById("js-stats-r2").textContent || "{}");
+        const r3 = JSON.parse(document.getElementById("js-stats-r3").textContent || "{}");
+        const r4 = JSON.parse(document.getElementById("js-stats-r4").textContent || "{}");
 
-    // Garante números (evita JS quebrar se vier undefined/null)
-    const simPositivo = [
-      Number(r2?.sim) || 0,
-      Number(r3?.sim) || 0,
-      Number(r4?.positivo) || 0
-    ];
-    const naoNegativo = [
-      Number(r2?.nao) || 0,
-      Number(r3?.nao) || 0,
-      Number(r4?.negativo) || 0
-    ];
+        // Garante números (evita JS quebrar se vier undefined/null)
+        const simPositivo = [
+        Number(r2?.sim) || 0,
+        Number(r3?.sim) || 0,
+        Number(r4?.positivo) || 0
+        ];
+        const naoNegativo = [
+        Number(r2?.nao) || 0,
+        Number(r3?.nao) || 0,
+        Number(r4?.negativo) || 0
+        ];
 
-    const ctx = document.getElementById("graficoDistribuicao").getContext("2d");
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["P2 - Sinais de Sobrecarga", "P3 - Liderança e Saúde ", "P4 - Impacto do Ambiente"],
-        datasets: [
-          { label: "Sim / Positivo", data: simPositivo, backgroundColor: "#198754" },
-          { label: "Não / Negativo", data: naoNegativo, backgroundColor: "#dc3545" }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "top" },
-          tooltip: { mode: "index", intersect: false }
+        const ctx = document.getElementById("graficoDistribuicao").getContext("2d");
+        new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["P2 - Sinais de Sobrecarga", "P3 - Liderança e Saúde ", "P4 - Impacto do Ambiente"],
+            datasets: [
+            { label: "Sim / Positivo", data: simPositivo, backgroundColor: "#198754" },
+            { label: "Não / Negativo", data: naoNegativo, backgroundColor: "#dc3545" }
+            ]
         },
-        scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 } }
+        options: {
+            responsive: true,
+            plugins: {
+            legend: { position: "top" },
+            tooltip: { mode: "index", intersect: false }
+            },
+            scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+            }
         }
-      }
+        });
+    } catch (err) {
+        console.error("Erro ao montar gráfico:", err);
+    }
     });
-  } catch (err) {
-    console.error("Erro ao montar gráfico:", err);
-  }
-});
-</script>
-<br>
+    </script>
+    <br>
 
 <div class="flex justify-end mb-6">
     <a href="{% url 'exportar_csv' %}" class="btn-csv">
@@ -359,149 +371,197 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="tabs">
   <button class="tablink active" onclick="openTab(event, 'respostas')">Respostas</button>
   <button class="tablink" onclick="openTab(event, 'pendentes')">Pendentes</button>
-  <button class="tablink" onclick="openTab(event, 'visao')">Visão geral</button>
-
 </div>
-<div class="filtros">
+
+<form method="get" action="" class="filtros">
   <div class="filtro-container">
-    <select id="filtro-cargo" class="filtro-select" >
+    <select name="cargo" id="filtro-cargo" class="filtro-select" onchange="this.form.submit()">
       <option value="">Todos os cargos</option>
+      {% for c in cargos %}
+        <option value="{{ c }}" {% if f_cargo == c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
     </select>
   </div>
+
   <div class="filtro-container">
-    <select id="filtro-local" class="filtro-select">
+    <select name="local_trabalho" id="filtro-local" class="filtro-select" onchange="this.form.submit()">
       <option value="">Todos os locais</option>
+      {% for l in locais %}
+        <option value="{{ l }}" {% if f_local == l %}selected{% endif %}>{{ l }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="filtro-container">
+    <select name="cidade" id="filtro-cidade" class="filtro-select" onchange="this.form.submit()">
+      <option value="">Todas as cidades</option>
+      {% for ci in cidades %}
+        <option value="{{ ci }}" {% if f_cidade == ci %}selected{% endif %}>{{ ci }}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="filtro-container">
-    <select id="filtro-cidade" class="filtro-select">
-      <option value="">Todas as cidades</option>
-    </select>
-  </div>
+  <select name="p2" id="filtro-p2" class="filtro-select" onchange="this.form.submit()">
+    <option value="">P2 - Todos</option>
+    <option value="Sim" {% if f_p2 == "Sim" %}selected{% endif %}>Sim</option>
+    <option value="Não" {% if f_p2 == "Não" %}selected{% endif %}>Não</option>
+  </select>
 </div>
 
-<div id="respostas" class="tabcontent" style="display:block;"></div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>CPF</th>
-                    <th>Nome</th>
-                    <th>Sexo</th>
-                    <th>Dt.Nasc</th>
-                    <th>Escolaridade</th>
-                    <th>Local de trabalho</th>
-                    <th>T.UNICOOP</th>
-                    <th>T.func Atual</th>
-                    <th>Cidade</th>
-                    <th>Data</th>
-                    <th>P1: Estresse/Insegurança</th>
-                    <th>P2: Sobrecarga</th>
-                    <th>P3: Liderança</th>
-                    <th>P4: Ambiente</th>
-                    <th>P5: Sugestões</th>
-                    <th>P6: Comentários</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for resposta in respostas %}
-                <tr>
-                    <td>{{ resposta.cpf }}</td>
-                    <td> {% if resposta.colaborador %}
-                            {{ resposta.colaborador.nome_completo }}
-                        {% else %}
-                            -
-                        {% endif %}</td>
-                    <td>{% if resposta.colaborador %}
-                            {{ resposta.colaborador.sexo }}
-                        {% else %}
-                            -
-                        {% endif %}</td>
-                    <td>{% if resposta.colaborador %}
-                            {{ resposta.colaborador.nascimento }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if resposta.colaborador %}
-                            {{ resposta.colaborador.escolaridade }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if resposta.colaborador %}
-                            {{ resposta.colaborador.local_trabalho }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if resposta.colaborador %}
-                            {{ resposta.colaborador.tempo_unicoop }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if resposta.colaborador %}
-                            {{ resposta.colaborador.tempo_funcao }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if resposta.colaborador %}
-                            {{ resposta.colaborador.cidade }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ resposta.data_resposta|date:"d/m/Y" }}</td>
-                    <td>{{ resposta.resposta1 }}</td>
+<div class="filtro-container">
+  <select name="p3" id="filtro-p3" class="filtro-select" onchange="this.form.submit()">
+    <option value="">P3 - Todos</option>
+    <option value="Sim" {% if f_p3 == "Sim" %}selected{% endif %}>Sim</option>
+    <option value="Não" {% if f_p3 == "Não" %}selected{% endif %}>Não</option>
+  </select>
+</div>
 
-                    <td>
-                        <strong>{{ resposta.resposta2 }}</strong>
-                        {% if resposta.resposta2 == "Sim" %}
-                        <details>
-                            <summary>Ver Descrição</summary>
-                            <p>{{ resposta.resposta2_descricao }}</p>
-                        </details>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <strong>{{ resposta.resposta3 }}</strong>
-                        {% if resposta.resposta3 == "Sim" %}
-                        <details>
-                            <summary>Ver Descrição</summary>
-                            <p>{{ resposta.resposta3_descricao }}</p>
-                        </details>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <strong>{{ resposta.resposta4 }}</strong>
-                        <details>
-                            <summary>Ver Descrição</summary>
-                            <p>{{ resposta.resposta4_descricao }}</p>
-                        </details>
-                    </td>
-                    <td>{{ resposta.resposta5 }}</td>
-                    <td>{{ resposta.resposta6 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="filtro-container">
+  <select name="p4" id="filtro-p4" class="filtro-select" onchange="this.form.submit()">
+    <option value="">P4 - Todos</option>
+    <option value="Positivamente" {% if f_p4 == "Positivamente" %}selected{% endif %}>Positivamente</option>
+    <option value="Negativamente" {% if f_p4 == "Negativamente" %}selected{% endif %}>Negativamente</option>
+  </select>
+</div>
+
+
+</form>
+
+</div>
+
+<div id="respostas" class="tabcontent" style="display:block; width: 100%; overflow-x: auto;">
+        <div class="table-container">
+            <table style="min-width: 1200px; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>CPF</th>
+                        <th>Nome</th>
+                        <th>Sexo</th>
+                        <th>Dt.Nasc</th>
+                        <th>Cargo</th>
+                        <th>Escolaridade</th>
+                        <th>Local de trabalho</th>
+                        <th>T.UNICOOP</th>
+                        <th>T.func Atual</th>
+                        <th>Cidade</th>
+                        <th>Data</th>
+                        <th>P1: Estresse/Insegurança</th>
+                        <th>P2: Sobrecarga</th>
+                        <th>P3: Liderança</th>
+                        <th>P4: Ambiente</th>
+                        <th>P5: Sugestões</th>
+                        <th>P6: Comentários</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resposta in respostas %}
+                    <tr>
+                        <td>{{ resposta.cpf }}</td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.nome_completo }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.sexo }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.data_nascimento }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.cargo }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.escolaridade }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.local_trabalho }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.tempo_unicoop }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.tempo_funcao }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            {% if resposta.colaborador %}
+                                {{ resposta.colaborador.cidade }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>{{ resposta.data_resposta|date:"d/m/Y" }}</td>
+                        <td>{{ resposta.resposta1 }}</td>
+                        <td>
+                            <strong>{{ resposta.resposta2 }}</strong>
+                            {% if resposta.resposta2 == "Sim" %}
+                            <details>
+                                <summary>Ver Descrição</summary>
+                                <p>{{ resposta.resposta2_descricao }}</p>
+                            </details>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ resposta.resposta3 }}</strong>
+                            {% if resposta.resposta3 == "Não" %}
+                            <details>
+                                <summary>Ver Descrição</summary>
+                                <p>{{ resposta.resposta3_descricao }}</p>
+                            </details>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ resposta.resposta4 }}</strong>
+                            <details>
+                                <summary>Ver Descrição</summary>
+                                <p>{{ resposta.resposta4_descricao }}</p>
+                            </details>
+                        </td>
+                        <td>{{ resposta.resposta5 }}</td>
+                        <td>{{ resposta.resposta6 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% else %}
+<div id="pendentes" class="tabcontent" style="display:none;">
         <div class="card no-answers">
             <p>Ainda não há nenhuma resposta para exibir.</p>
         </div>
     {% endif %}
 </div>
 </div>
-
-
 </div>
+
+ <script>
+function openTab(evt, tabName) {
+  const tabcontent = document.getElementsByClassName("tabcontent");
+  for (let i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  const tablinks = document.getElementsByClassName("tablink");
+  for (let i = 0; i < tablinks.length; i++) {
+    tablinks[i].classList.remove("active");
+  }
+
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.classList.add("active");
+}
+</script>
 </body>
 </html>

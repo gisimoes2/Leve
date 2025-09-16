@@ -17,6 +17,7 @@ urlpatterns = [
     path('cadastrar/', views.cadastrar_colaborador, name='cadastrar_colaborador'),
     path("exportar-csv/", views.exportar_csv, name="exportar_csv"),
 
+
     
 
 
