@@ -137,7 +137,17 @@
     table-layout: fixed; /* força todas as colunas a respeitarem os limites */
 }
 
+table {
+  table-layout: fixed; /* fixa o layout */
+  width: 100%;
+}
 
+table th, table td {
+  word-wrap: break-word;      /* quebra palavra */
+  white-space: normal;        /* permite quebra de linha */
+  overflow-wrap: break-word;  /* alternativa mais moderna */
+  vertical-align: top;        /* alinhamento superior */
+}
 /* Cabeçalho fixo */
 .table-container thead th {
     position: sticky;
@@ -145,7 +155,7 @@
     background: #f8f8f8;
     z-index: 2;
 }
-
+        
         thead {
             background: #f8f9fa;
         }
@@ -155,6 +165,9 @@
             border-bottom: 1px solid var(--border);
             text-align: left;
             font-size: 0.9rem;
+            max-width: 200px;        /* largura máxima da célula */
+            word-wrap: break-word;   /* quebra palavras longas */
+            white-space: normal; 
         }
 
         th {
@@ -262,7 +275,14 @@
         display: block;
     }
 
-    
+.cell-scroll {
+  max-height: 100px;      /* altura máxima */
+  max-width: 200px;       /* largura máxima */
+  overflow: auto;         /* cria scroll se precisar */
+  white-space: normal;    /* quebra linha normal */
+  word-break: break-word; /* quebra palavras longas */
+}
+
 
     </style>
 </head>
@@ -278,6 +298,11 @@
             <h3>Total de Respostas</h3>
             <p class="count">{{ total_respostas }}</p>
         </div>
+        <div class="card">
+            <h3>Total de Respostas Pendentes</h3>
+            <p class="count">{{ pendentes|length }}</p>
+        </div>
+        
        <div class="card">
             <h3>Total de Cargos</h3>
             <p class="count">{{ total_cargo }}</p>
@@ -299,6 +324,7 @@
             <p class="details"><strong>Positivo:</strong> {{ stats_r4.positivo }} | <strong>Negativo:</strong> {{ stats_r4.negativo }}</p>
         </div>
     </section>
+{% endif %}
 
     <h2>Distribuição de Respostas (P2, P3 e P4)</h2>
     <canvas id="graficoDistribuicao" width="600" height="300"></canvas>
@@ -368,14 +394,11 @@
     <h2>Respostas Detalhadas</h2>
 
 
-<div class="tabs">
-  <button class="tablink active" onclick="openTab(event, 'respostas')">Respostas</button>
-  <button class="tablink" onclick="openTab(event, 'pendentes')">Pendentes</button>
-</div>
+
 
 <form method="get" action="" class="filtros">
   <div class="filtro-container">
-    <select name="cargo" id="filtro-cargo" class="filtro-select" onchange="this.form.submit()">
+    <select name="cargo" id="filtro-cargo" class="filtro-select" onchange="atualizarFiltro()">
       <option value="">Todos os cargos</option>
       {% for c in cargos %}
         <option value="{{ c }}" {% if f_cargo == c %}selected{% endif %}>{{ c }}</option>
@@ -384,7 +407,7 @@
   </div>
 
   <div class="filtro-container">
-    <select name="local_trabalho" id="filtro-local" class="filtro-select" onchange="this.form.submit()">
+    <select name="local_trabalho" id="filtro-local" class="filtro-select" onchange="atualizarFiltro()">
       <option value="">Todos os locais</option>
       {% for l in locais %}
         <option value="{{ l }}" {% if f_local == l %}selected{% endif %}>{{ l }}</option>
@@ -393,7 +416,7 @@
   </div>
 
   <div class="filtro-container">
-    <select name="cidade" id="filtro-cidade" class="filtro-select" onchange="this.form.submit()">
+    <select name="cidade" id="filtro-cidade" class="filtro-select" onchange="atualizarFiltro()" >
       <option value="">Todas as cidades</option>
       {% for ci in cidades %}
         <option value="{{ ci }}" {% if f_cidade == ci %}selected{% endif %}>{{ ci }}</option>
@@ -401,7 +424,7 @@
     </select>
   </div>
   <div class="filtro-container">
-  <select name="p2" id="filtro-p2" class="filtro-select" onchange="this.form.submit()">
+  <select name="p2" id="filtro-p2" class="filtro-select" onchange="atualizarFiltro()" >
     <option value="">P2 - Todos</option>
     <option value="Sim" {% if f_p2 == "Sim" %}selected{% endif %}>Sim</option>
     <option value="Não" {% if f_p2 == "Não" %}selected{% endif %}>Não</option>
@@ -409,7 +432,7 @@
 </div>
 
 <div class="filtro-container">
-  <select name="p3" id="filtro-p3" class="filtro-select" onchange="this.form.submit()">
+  <select name="p3" id="filtro-p3" class="filtro-select" onchange="atualizarFiltro()" >
     <option value="">P3 - Todos</option>
     <option value="Sim" {% if f_p3 == "Sim" %}selected{% endif %}>Sim</option>
     <option value="Não" {% if f_p3 == "Não" %}selected{% endif %}>Não</option>
@@ -417,150 +440,191 @@
 </div>
 
 <div class="filtro-container">
-  <select name="p4" id="filtro-p4" class="filtro-select" onchange="this.form.submit()">
+  <select name="p4" id="filtro-p4" class="filtro-select" onchange="atualizarFiltro()">
     <option value="">P4 - Todos</option>
     <option value="Positivamente" {% if f_p4 == "Positivamente" %}selected{% endif %}>Positivamente</option>
     <option value="Negativamente" {% if f_p4 == "Negativamente" %}selected{% endif %}>Negativamente</option>
   </select>
 </div>
-
-
 </form>
-
 </div>
 
+
+<div class="tabs">
+  <button class="tablink active" onclick="openTab(event, 'respostas')">Respostas</button>
+  <button class="tablink" onclick="openTab(event, 'pendentes')">Pendentes</button>
+</div>
+
+{% if total_respostas > 0 %}
 <div id="respostas" class="tabcontent" style="display:block; width: 100%; overflow-x: auto;">
-        <div class="table-container">
-            <table style="min-width: 1200px; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th>CPF</th>
-                        <th>Nome</th>
-                        <th>Sexo</th>
-                        <th>Dt.Nasc</th>
-                        <th>Cargo</th>
-                        <th>Escolaridade</th>
-                        <th>Local de trabalho</th>
-                        <th>T.UNICOOP</th>
-                        <th>T.func Atual</th>
-                        <th>Cidade</th>
-                        <th>Data</th>
-                        <th>P1: Estresse/Insegurança</th>
-                        <th>P2: Sobrecarga</th>
-                        <th>P3: Liderança</th>
-                        <th>P4: Ambiente</th>
-                        <th>P5: Sugestões</th>
-                        <th>P6: Comentários</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for resposta in respostas %}
-                    <tr>
-                        <td>{{ resposta.cpf }}</td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.nome_completo }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.sexo }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.data_nascimento }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.cargo }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.escolaridade }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.local_trabalho }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.tempo_unicoop }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.tempo_funcao }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>
-                            {% if resposta.colaborador %}
-                                {{ resposta.colaborador.cidade }}
-                            {% else %}-{% endif %}
-                        </td>
-                        <td>{{ resposta.data_resposta|date:"d/m/Y" }}</td>
-                        <td>{{ resposta.resposta1 }}</td>
-                        <td>
-                            <strong>{{ resposta.resposta2 }}</strong>
-                            {% if resposta.resposta2 == "Sim" %}
-                            <details>
-                                <summary>Ver Descrição</summary>
-                                <p>{{ resposta.resposta2_descricao }}</p>
-                            </details>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <strong>{{ resposta.resposta3 }}</strong>
-                            {% if resposta.resposta3 == "Não" %}
-                            <details>
-                                <summary>Ver Descrição</summary>
-                                <p>{{ resposta.resposta3_descricao }}</p>
-                            </details>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <strong>{{ resposta.resposta4 }}</strong>
-                            <details>
-                                <summary>Ver Descrição</summary>
-                                <p>{{ resposta.resposta4_descricao }}</p>
-                            </details>
-                        </td>
-                        <td>{{ resposta.resposta5 }}</td>
-                        <td>{{ resposta.resposta6 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% else %}
-<div id="pendentes" class="tabcontent" style="display:none;">
-        <div class="card no-answers">
-            <p>Ainda não há nenhuma resposta para exibir.</p>
-        </div>
+  <div class="table-container">
+    <table style="min-width: 1200px; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Sexo</th>
+          <th>Dt.Nasc</th>
+          <th>Cargo</th>
+          <th>Escolaridade</th>
+          <th>Local de trabalho</th>
+          <th>T.UNICOOP</th>
+          <th>T.func Atual</th>
+          <th>Cidade</th>
+          <th>Data resposta</th>
+          <th>P1 </th>
+          <th>P2 </th>
+          <th>P3 </th>
+          <th>P4 </th>
+          <th>P5 </th>
+          <th>P6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for resposta in respostas %}
+        <tr>
+          <td>{{ resposta.cpf }}</td>
+          <td>{{ resposta.colaborador.nome_completo }}</td>
+          <td>{{ resposta.colaborador.sexo }}</td>
+          <td>{{ resposta.colaborador.data_nascimento }}</td>
+          <td>{{ resposta.colaborador.cargo }}</td>
+          <td>{{ resposta.colaborador.escolaridade }}</td>
+          <td>{{ resposta.colaborador.local_trabalho }}</td>
+          <td>{{ resposta.colaborador.tempo_unicoop }}</td>
+          <td>{{ resposta.colaborador.tempo_funcao }}</td>
+          <td>{{ resposta.colaborador.cidade }}</td>
+          <td>{{ resposta.data_resposta|date:"d/m/Y" }}</td>
+          <td>
+  <div class="cell-scroll">
+    {{ resposta.resposta1 }}
+  </div>
+</td>
+          <td>
+  <div class="cell-scroll">
+    <strong>{{ resposta.resposta2 }}</strong>
+    {% if resposta.resposta2 == "Sim" %}
+      <details>
+        <summary>Ver</summary>
+        <p>{{ resposta.resposta2_descricao }}</p>
+      </details>
     {% endif %}
+  </div>
+</td>
+
+<td>
+  <div class="cell-scroll">
+    <strong>{{ resposta.resposta3 }}</strong>
+    {% if resposta.resposta3 == "Não" %}
+      <details>
+        <summary>Ver</summary>
+        <p>{{ resposta.resposta3_descricao }}</p>
+      </details>
+    {% endif %}
+  </div>
+</td>
+
+<td>
+  <div class="cell-scroll">
+    <strong>{{ resposta.resposta4 }}</strong>
+    <details>
+      <summary>Ver</summary>
+      <p>{{ resposta.resposta4_descricao }}</p>
+    </details>
+  </div>
+</td>
+
+<td>
+  <div class="cell-scroll">
+    {{ resposta.resposta5 }}
+  </div>
+</td>
+
+<td>
+  <div class="cell-scroll">
+    {{ resposta.resposta6 }}
+  </div>
+</td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+{% else %}
+<div id="respostas" class="tabcontent" style="display:none;">
+  <div class="card no-answers">
+    <p>❌ Nenhuma resposta recebida ainda.</p>
+  </div>
 </div>
+{% endif %}
+
+<!-- UMA única div pendentes -->
+<div id="pendentes" class="tabcontent" style="display:none;">
+  {% if pendentes|length > 0 %}
+  <div class="table-container">
+    <table style="min-width: 1000px; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Cargo</th>
+          <th>Cidade</th>
+          <th>Telefone</th>
+          <th>Modalidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for col in pendentes %}
+        <tr>
+          <td>{{ col.cpf }}</td>
+          <td>{{ col.nome_completo2 }}</td>
+          <td>{{ col.cargo2 }}</td>
+          <td>{{ col.cidade2 }}</td>
+          <td>{{ col.telefone }}</td>
+          <td>{{ col.modalidade }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="card no-answers">
+    <p>🎉 Todos já responderam ao questionário!</p>
+  </div>
+  {% endif %}
 </div>
 
- <script>
+<script>
 function openTab(evt, tabName) {
   const tabcontent = document.getElementsByClassName("tabcontent");
   for (let i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
-
   const tablinks = document.getElementsByClassName("tablink");
   for (let i = 0; i < tablinks.length; i++) {
     tablinks[i].classList.remove("active");
   }
-
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.classList.add("active");
+}
+</script>
+<script>
+function atualizarFiltro() {
+  const form = document.querySelector('.filtros');
+  const params = new URLSearchParams(window.location.search);
+
+  // lê todos os selects do formulário e atualiza a querystring
+  form.querySelectorAll('select').forEach(sel => {
+    if (sel.value) {
+      params.set(sel.name, sel.value);
+    } else {
+      params.delete(sel.name);
+    }
+  });
+
+  // redireciona mantendo todos os parâmetros escolhidos
+  window.location.search = params.toString();
 }
 </script>
 </body>

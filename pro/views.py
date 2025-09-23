@@ -5,6 +5,10 @@ from datetime import datetime
 from django.db.models import Count, Q
 from django.http import HttpResponse   # <-- ADICIONA ISSO
 import csv
+import pandas as pd
+from django.conf import settings
+import os
+from django.contrib import messages
 
 
 # Create your views here.
@@ -18,15 +22,20 @@ def area(request):
     return render(request, 'usuarios/area.html')
 
 def responder(request):
+    
     if request.method == "POST":
-        cpf = request.POST.get("cpf", "").strip()
+        cpf = normalizar_cpf(request.POST.get("cpf", "").strip())
 
+        if not Colaborador.objects.filter(cpf=cpf).exists():
+            messages.error(request, "❌ CPF não cadastrado. Cadastre-se primeiro para responder.")
+            return render(request, "usuarios/responder.html", {"valores": request.POST}) 
+        
+        # 🔹 1) Verifica se já respondeu
         if RespostaPesquisa.objects.filter(cpf=cpf).exists():
-            messages.error(request, "Este CPF já respondeu ao questionário.")
+            messages.error(request, "❌ Este CPF já respondeu ao questionário.")
             return redirect("responder")
 
-
-        
+        # 🔹 2) Coleta as respostas
         resposta1 = request.POST.get("resposta1", "").strip()
         resposta2 = request.POST.get("resposta2", "").strip()
         resposta2_descricao = request.POST.get("resposta2_descricao", "").strip()
@@ -37,10 +46,7 @@ def responder(request):
         resposta5 = request.POST.get("resposta5", "").strip()
         resposta6 = request.POST.get("resposta6", "").strip()
 
-        if RespostaPesquisa.objects.filter(cpf=cpf).exists():
-            messages.error(request, "Você já respondeu o questionário.")
-            return redirect("responder")
-        
+        # 🔹 3) Cria o registro da pesquisa
         RespostaPesquisa.objects.create(
             cpf=cpf,
             resposta1=resposta1,
@@ -53,21 +59,63 @@ def responder(request):
             resposta5=resposta5,
             resposta6=resposta6,
         )
+        request.session['respondeu'] = True
 
-        messages.success(request, "Obrigado! Suas respostas foram salvas.")
+        # 🔹 4) Mensagem de sucesso e redirecionamento
+        messages.success(request, "✅ Obrigado! Suas respostas foram salvas.")
         return redirect("conclusaoform")  # página de agradecimento
 
-    # GET
-    return render(request, "usuarios/responder.html" )
+    # 🔹 Caso seja GET, só renderiza o formulário
+    return render(request, "usuarios/responder.html")
 
 def cadastro(request):
     return render(request, 'usuarios/cadastro.html')
 
 def login(request):
-    return render(request, 'usuarios/login.html')
+    if request.method == "POST":
+        cpf = request.POST.get("cepefe", "").strip()
+        senha = request.POST.get("senha", "").strip()
+
+        LOGIN_CORRETO = "levegestao"
+        SENHA_CORRETA = "Silviosantos1!1234"
+
+        if cpf == LOGIN_CORRETO and senha == SENHA_CORRETA:
+            request.session["logado"] = True
+            return redirect("dash")  
+        else:
+            messages.error(request, "❌ CPF ou senha incorretos.")
+
+    return render(request, "usuarios/login.html")
+
+def normalizar_cpf(cpf):
+    return "".join(filter(str.isdigit, str(cpf or "")))
+
+def validar_cpf(cpf: str) -> bool:
+    """
+    Valida um CPF pelo cálculo dos dígitos verificadores.
+    Retorna True se for válido, False caso contrário.
+    """
+    cpf = "".join(filter(str.isdigit, str(cpf)))  # mantém só números
+
+    if len(cpf) != 11:
+        return False
+
+    # elimina CPFs com todos os dígitos iguais (ex: 11111111111)
+    if cpf == cpf[0] * 11:
+        return False
+
+    # calcula os 2 dígitos verificadores
+    for i in range(9, 11):
+        soma = sum(int(cpf[num]) * ((i+1) - num) for num in range(0, i))
+        digito = ((soma * 10) % 11) % 10
+        if digito != int(cpf[i]):
+            return False
+
+    return True
+
 
 def dash(request):
-    # 1. Busca todas as respostas, ordenando pelas mais recentes
+    
     f_cargo  = (request.GET.get("cargo") or "").strip()
     f_local  = (request.GET.get("local_trabalho") or "").strip()
     f_cidade = (request.GET.get("cidade") or "").strip()
@@ -89,7 +137,8 @@ def dash(request):
         cpfs_filtrados = list(col_qs.values_list('cpf', flat=True))
         respostas_list = respostas_list.filter(cpf__in=cpfs_filtrados)
 
-    colaboradores = {c.cpf: c for c in Colaborador.objects.all()}
+
+    
 
     if f_p2:
         respostas_list = respostas_list.filter(resposta2=f_p2)
@@ -101,8 +150,11 @@ def dash(request):
         respostas_list = respostas_list.filter(resposta4=f_p4)
 
     # Cria um atributo extra em cada resposta
+    colaboradores = {normalizar_cpf(c.cpf): c for c in Colaborador.objects.all()}
+
     for r in respostas_list:
-        r.colaborador = colaboradores.get(r.cpf)
+        r.colaborador = colaboradores.get(normalizar_cpf(r.cpf))
+
 
     # 🔹 Ajustado: garantir valores únicos sem duplicar lógica
     cargos = sorted(set(
@@ -146,9 +198,28 @@ def dash(request):
         negativo=Count('pk', filter=Q(resposta4="Negativamente"))
     )
 
+    colaboradores = carregar_planilha()
+
+    
+    # Busca CPFs que já responderam
+    responded_cpfs = RespostaPesquisa.objects.values_list("cpf", flat=True)
+
+    # Normaliza todos os CPFs (deixa só dígitos)
+    responded_cpfs = {
+        "".join(filter(str.isdigit, str(cpf)))
+        for cpf in responded_cpfs
+    }
+
+    # Monta a lista de pendentes com CPFs normalizados
+    pendentes_list = [
+        c for c in colaboradores
+        if "".join(filter(str.isdigit, str(c["cpf"]))) not in responded_cpfs
+    ]
+
     # 3. Monta o contexto para enviar ao template
     context = {
-        'respostas': respostas_list,
+        'respostas': respostas_list, 
+        'pendentes': pendentes_list,
         'total_respostas': total_respostas,
         'total_cargo': total_cargo,
         'total_local': total_local,
@@ -176,6 +247,9 @@ from django.contrib import messages
 from .models import RespostaPesquisa
 
 def conclusaoform(request):
+    if not request.session.get('respondeu'):
+        return redirect('responder')
+    
     return render(request, "usuarios/conclusaoform.html")
 
 
@@ -184,8 +258,12 @@ from django.db import IntegrityError
 
 def cadastrar_colaborador(request):
     if request.method == "POST":
-        cpf = request.POST.get("cpf", "").strip()
+        cpf = "".join(filter(str.isdigit, request.POST.get("cpf", "")))
 
+        if not validar_cpf(cpf):
+            messages.error(request, "❌ CPF inválido! Verifique os números digitados.")
+            return render(request, "usuarios/questionario.html", {"valores": request.POST})
+        
         # 1) Verifica se já existe
         if Colaborador.objects.filter(cpf=cpf).exists():
             messages.error(request, "❌ Este CPF já está cadastrado!")
@@ -287,8 +365,32 @@ def exportar_csv(request):
 
     return response
 
+def carregar_planilha():
+    """
+    Lê a planilha de colaboradores (apenas a aba 'TODOS') e devolve uma lista de dicts.
+    """
+    caminho = os.path.join(settings.BASE_DIR, "dados", "colaboradores.xlsx")
+    
+    # Lê apenas a aba 'TODOS'
+    df = pd.read_excel(caminho, sheet_name="TODOS", dtype=str)  # tudo como string para evitar problema no CPF
+    
+    df.columns = df.columns.str.strip()
 
+    # Normaliza nomes das colunas para o sistema
+    df = df.rename(columns={
+        "NOME COMPLETO": "nome_completo2",
+        "CARGO": "cargo2",
+        "CPF": "cpf",
+        "TELEFONE": "telefone",
+        "CIDADE": "cidade2",
+        "MODALIDADE": "modalidade",
+    })
 
+    # Remove espaços extras dos CPFs (importante para comparar com banco)
+    df["cpf"] = df["cpf"].str.replace(r"\D", "", regex=True)  # só números
 
+    return df.to_dict(orient="records")
+
+   
 
 

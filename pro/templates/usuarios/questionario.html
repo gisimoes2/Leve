@@ -83,8 +83,10 @@
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Data de nascimento *</label>
-                    <input id="nascimento" type="text" name="nascimento" placeholder="Digite sua data de nascimento" required
-                            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <input id="nascimento" type="text" name="nascimento" 
+                    placeholder="DD/MM/AAAA" required 
+                    pattern="\d{2}/\d{2}/\d{4}"
+                    class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
                 </div>
             
                 <!-- E-mail -->
@@ -132,7 +134,7 @@
                         <option value="Gestor Administrativo(a)">Gestor Administrativo(a)</option>
                         <option value="Vice Presidente Administrativo(a)">Vice Presidente Administrativo(a)</option>
                         <option value="Diretor(a)">Diretor(a) </option>
-                        <option value="Atendimental ao Cooperado">Atendimental ao Cooperado </option>
+                        <option value="Atendimental ao Cooperado">Atendimento ao Cooperado </option>
                         <option value="Gestor(a) Financeiro">Gestor(a) Financeiro </option>
                     </select>
                 </div>
@@ -170,6 +172,7 @@
                         <option value="Clínica Viver Bem - Agrestina">Clínica Viver Bem - Agrestina</option>
                         <option value="CLÍNICA TERCEIRO PASSO">CLÍNICA TERCEIRO PASSO</option>
                         <option value="OK Doutor">OK Doutor</option>
+                        <option value="Unicoop">Unicoop</option>
                     </select>
                 </div>
 
@@ -257,5 +260,20 @@
             }
         }
     </script>
+    <script>
+  function bloqueiaVoltar() {
+      // Empurra uma nova entrada fake no histórico
+      window.history.pushState(null, "", window.location.href);
+  }
+
+  // Executa assim que a página carregar
+  bloqueiaVoltar();
+
+  // Sempre que o usuário tentar voltar → bloqueia + reempurra
+  window.addEventListener("popstate", function () {
+      alert("🚫 Você não pode voltar para a página anterior.");
+      bloqueiaVoltar();
+  });
+</script>
 </body>
 </html>
