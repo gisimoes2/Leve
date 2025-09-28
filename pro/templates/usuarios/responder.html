@@ -5,16 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Avaliação de Bem-Estar</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-primaria { background-color: #038554; }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-2xl text-center">
-
+  <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-2xl">
 
     {% if messages %}
       <div class="mb-4">
         {% for message in messages %}
-          <div class="px-4 py-2 rounded mb-2
+          <div class="px-4 py-3 rounded-lg mb-2 text-sm sm:text-base
                       {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% endif %}
                       {% if message.tags == 'success' %}bg-green-100 text-green-700 border border-green-300{% endif %}">
             {{ message }}
@@ -23,132 +25,118 @@
       </div>
     {% endif %}
     
-    <!-- FORMULÁRIO -->
-<form method="POST" action="{% url 'responder' %}" class="bg-white p-6 rounded-lg shadow-md">
-  {% csrf_token %}
+    <form method="POST" action="{% url 'responder' %}">
+      {% csrf_token %}
 
-  <h2 class="text-center text-xl font-bold text-green-700 mb-4">Avaliação de Bem-Estar</h2>
-  <p class="text-gray-600 text-sm mb-6 text-center">
-    <b>Por favor, responda todas as informações com sinceridade. Não existem respostas certas ou erradas - responda de acordo com a avaliação que você faz do seu ambiente de trabalho.</b>
-  </p>
+      <h2 class="text-center text-xl sm:text-2xl font-bold text-green-700 mb-4">Avaliação de Bem-Estar</h2>
+      <p class="text-gray-600 text-sm mb-8 text-center px-2">
+        <b>Por favor, responda todas as informações com sinceridade. Não existem respostas certas ou erradas - responda de acordo com a avaliação que você faz do seu ambiente de trabalho.</b>
+      </p>
 
-  <!-- CPF -->
-  <div class="mb-3">
-    <label class="block font-medium text-gray-700 mb-2 text-left">CPF<br> *Coloque seu CPF novamente para que as respostas sejam atreladas a ele</label>
-    <input type="text" id="cpf" name="cpf" required placeholder="Digite seu CPF"
-      value="{{ cpf }}"
-      class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500">
+      <div class="mb-6">
+        <label for="cpf" class="block font-medium text-gray-700 mb-2 text-left">CPF</label>
+        <span class="block text-xs text-gray-500 mb-2"><strong>*Coloque seu CPF novamente para que as respostas sejam atreladas a ele.</strong></span>
+        <input type="text" id="cpf" name="cpf" required placeholder="Digite seu CPF"
+          value="{{ cpf }}"
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150">
+      </div>
+
+      <div class="mb-6"> 
+        <label class="block font-medium text-gray-700 mb-2 text-left"><strong>Quais situações de estresse ou insegurança você percebe atualmente em seu ambiente de trabalho?</strong></label> 
+        <textarea name="resposta1" required placeholder="Nos conte mais sobre sua resposta..." class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150" maxlength="500"></textarea> 
+      </div>
+
+      <div class="mb-6">
+        <label class="block font-medium text-gray-700 mb-2 text-left">
+          <strong>Você percebe sinais de sobrecarga ou assédio? Se sim, poderia descrever algum exemplo?</strong>
+        </label>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-3">
+          <label class="flex items-center gap-2"><input type="radio" name="resposta2" required value="Sim" onclick="toggleTextareaRequired('resposta2_descricao', true)"> Sim</label>
+          <label class="flex items-center gap-2"><input type="radio" name="resposta2" value="Não" onclick="toggleTextareaRequired('resposta2_descricao', false)"> Não</label>
+        </div>
+        <textarea id="resposta2_descricao" name="resposta2_descricao" placeholder="Descreva se marcou 'Sim'"
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150 hidden" maxlength="500"></textarea>
+      </div>
+
+      <div class="mb-6">
+        <label class="block font-medium text-gray-700 mb-2 text-left">
+          <strong>Como a liderança da sua área lida com questões relacionadas à saúde mental? Existem espaços seguros de escuta?</strong>
+        </label>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-3">
+          <label class="flex items-center gap-2"><input type="radio" name="resposta3" value="Sim" onclick="toggleTextareaRequired('resposta3_descricao', false)"> Sim</label>
+          <label class="flex items-center gap-2"><input type="radio" name="resposta3" required value="Não" onclick="toggleTextareaRequired('resposta3_descricao', true)"> Não</label>
+        </div>
+        <textarea id="resposta3_descricao" name="resposta3_descricao" placeholder="Descreva se marcou 'Não'"
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150 hidden" maxlength="500"></textarea>
+      </div>
+
+      <div class="mb-6">
+        <label class="block font-medium text-gray-700 mb-2 text-left">
+          <strong>De que forma o ambiente físico e social do trabalho impacta sua saúde mental?</strong>
+        </label>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-3">
+          <label class="flex items-center gap-2"><input type="radio" name="resposta4" required value="Positivamente" onclick="toggleTextareaRequired('resposta4_descricao', false)"> Positivamente</label>
+          <label class="flex items-center gap-2"><input type="radio" name="resposta4" required value="Negativamente" onclick="toggleTextareaRequired('resposta4_descricao', true)"> Negativamente</label>
+        </div>
+        <textarea id="resposta4_descricao" name="resposta4_descricao" placeholder="Explique o impacto"
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150 hidden" maxlength="500"></textarea>
+      </div>
+
+      <div class="mb-6">
+        <label class="block font-medium text-gray-700 mb-2 text-left">
+          <strong>O que você acredita que poderia ser implementado ou melhorado para promover um ambiente psicologicamente seguro?</strong>
+        </label>
+        <textarea name="resposta5" required placeholder="Sua resposta..."
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150" maxlength="500"></textarea>
+      </div>
+
+      <div class="mb-8">
+        <label class="block font-medium text-gray-700 mb-2 text-left"><strong>Comentários adicionais</strong></label>
+        <textarea name="resposta6" placeholder="Gostaria de deixar alguma observação extra?"
+          class="w-full border-gray-300 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 transition duration-150" maxlength="500"></textarea>
+      </div>
+
+      <div class="flex justify-center">
+        <button type="submit"
+          class="w-full sm:w-auto bg-primaria text-white px-8 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 hover:opacity-90 transition-opacity">
+          <span>Enviar Questionário</span>
+        </button>
+      </div>
+    </form>
   </div>
 
-  <!-- Pergunta 1 -->
-  <div class="mb-4"> 
-    <label class="block font-medium text-gray-700 mb-2 text-left"> Quais situações de estresse ou insegurança você percebe atualmente em seu ambiente de trabalho? </label> 
-    <textarea name="resposta1" required placeholder="Nos conte mais sobre sua resposta..." class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500" maxlength="500"></textarea> 
-  </div>
-  <!-- Pergunta 2 -->
-<div class="mb-4">
-  <label class="block font-medium text-gray-700 mb-2 text-left">
-    Você percebe sinais de sobrecarga ou assédio? Se sim, poderia descrever algum exemplo?
-  </label>
-  <div class="flex gap-4 mb-2">
-    <label><input type="radio" name="resposta2" required value="Sim" onclick="toggleTextareaRequired('resposta2_descricao', true)"> Sim</label>
-    <label><input type="radio" name="resposta2" value="Não" onclick="toggleTextareaRequired('resposta2_descricao', false)"> Não</label>
-  </div>
-  <textarea id="resposta2_descricao" name="resposta2_descricao" placeholder="Descreva se marcou 'Sim'"
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 hidden" maxlength="500"></textarea>
-</div>
+  <script src="https://unpkg.com/imask"></script>
+  <script>
+    // Combinação de todos os scripts em um único bloco
 
-<!-- Pergunta 3 -->
-<div class="mb-4">
-  <label class="block font-medium text-gray-700 mb-2 text-left">
-    Como a liderança da sua área lida com questões relacionadas à saúde mental? Existem espaços seguros de escuta?
-  </label>
-  <div class="flex gap-4 mb-2">
-    <label><input type="radio" name="resposta3" value="Sim" onclick="toggleTextareaRequired('resposta3_descricao', false)"> Sim</label>
-    <label><input type="radio" name="resposta3" required value="Não" onclick="toggleTextareaRequired('resposta3_descricao', true)"> Não</label>
-  </div>
-  <textarea id="resposta3_descricao" name="resposta3_descricao" placeholder="Descreva se marcou 'Não'"
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 hidden" maxlength="500"></textarea>
-</div>
+    // Função para mostrar/esconder textarea e torná-lo obrigatório
+    function toggleTextareaRequired(id, required) {
+      const textarea = document.getElementById(id);
+      textarea.required = required;
+      if (required) {
+        textarea.classList.remove("hidden");
+      } else {
+        textarea.classList.add("hidden");
+        textarea.value = ''; // Limpa o campo se não for obrigatório
+      }
+    }
 
-<!-- Pergunta 4 -->
-<div class="mb-4">
-  <label class="block font-medium text-gray-700 mb-2 text-left">
-    De que forma o ambiente físico e social do trabalho impacta sua saúde mental?
-  </label>
-  <div class="flex gap-4 mb-2">
-    <label><input type="radio" name="resposta4" required value="Positivamente" onclick="toggleTextareaRequired('resposta4_descricao', false)"> Positivamente</label>
-    <label><input type="radio" name="resposta4" required value="Negativamente" onclick="toggleTextareaRequired('resposta4_descricao', true)"> Negativamente</label>
-  </div>
-  <textarea id="resposta4_descricao" name="resposta4_descricao" placeholder="Explique o impacto"
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 hidden" maxlength="500"></textarea>
-</div>
+    // Máscara para CPF (000.000.000-00)
+    IMask(document.getElementById('cpf'), {
+      mask: '000.000.000-00'
+    });
 
-<!-- Pergunta 5 -->
-<div class="mb-4">
-  <label class="block font-medium text-gray-700 mb-2 text-left">
-    O que você acredita que poderia ser implementado ou melhorado para promover um ambiente psicologicamente seguro?
-  </label>
-  <textarea name="resposta5" required placeholder="Sua resposta..."
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500" maxlength="500"></textarea>
-</div>
-
-<!-- Pergunta 6 -->
-<div class="mb-6">
-  <label class="block font-medium text-gray-700 mb-2 text-left">Comentários adicionais</label>
-  <textarea name="resposta6" placeholder="Gostaria de deixar alguma observação extra?"
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"maxlength="500"></textarea>
-</div>
-
-<script>
-function toggleTextareaRequired(id, required) {
-  const textarea = document.getElementById(id);
-  if(required) {
-    textarea.classList.remove("hidden");
-    textarea.required = true;
-  } else {
-    textarea.classList.add("hidden");
-    textarea.required = false;
-  }
-}
-</script>
-
-  <!-- Botão -->
-  <button type="submit"
-    class="text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2"style="background-color:#038554;">
-    Enviar Questionário
-  </button>
-</form>
-
-<script src="https://unpkg.com/imask"></script>
-<script>
-        // Máscara para CPF (000.000.000-00)
-        IMask(document.getElementById('cpf'), {
-            mask: '000.000.000-00'
-        });
-
-    </script>
-<script>
-function toggleTextarea(id) {
-  const textarea = document.getElementById(id);
-  textarea.classList.remove("hidden"); // mostra quando seleciona
-}
-</script>
-<script>
-  function bloqueiaVoltar() {
-      // Empurra uma nova entrada fake no histórico
+    // Função para bloquear o botão de voltar do navegador
+    function bloqueiaVoltar() {
       window.history.pushState(null, "", window.location.href);
-  }
+    }
+    bloqueiaVoltar();
 
-  // Executa assim que a página carregar
-  bloqueiaVoltar();
-
-  // Sempre que o usuário tentar voltar → bloqueia + reempurra
-  window.addEventListener("popstate", function () {
+    window.addEventListener("popstate", function() {
       alert("🚫 Você não pode voltar para a página anterior.");
       bloqueiaVoltar();
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>

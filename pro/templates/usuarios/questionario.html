@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <style>
   .bg-primaria { background-color: #038554; }
   .bg-secundaria { background-color: #6e1370; }
@@ -13,67 +12,63 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesquisa de Bem-Estar</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
 
-    <!-- Header -->
-    <header class="text-center py-10">
-        <div class="flex justify-center items-center space-x-2 mb-2">
-         <h1 class="text-3xl font-bold text-green-700">Pesquisa de Bem-Estar</h1>
+    <header class="text-center px-4 py-8 sm:py-10">
+        <div class="flex flex-col items-center justify-center space-y-2 mb-2">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primaria">
+              Pesquisa de Bem-Estar
+            </h1>
         </div>
-        <p class="text-gray-600 max-w-2xl mx-auto">
+        <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base px-2">
             Sua opinião é fundamental para criarmos um ambiente de trabalho mais saudável e acolhedor.
         </p>
     </header>
 
-    
-
-
-    <!-- Formulário -->
-    <main class="max-w-4xl mx-auto bg-white rounded-lg shadow p-10">
-        <h2 class="text-xl font-bold mb-1">Questionário de Saúde Mental e Bem-Estar no Trabalho</h2>
-        <p class="text-gray-600 mb-8 text-sm">
-            Por favor, insira os  todos os seus dados. 
+    <main class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6 sm:p-10 mb-10 mx-4 sm:mx-auto">
+        <h2 class="text-lg sm:text-xl font-bold mb-1">
+          Questionário de Saúde Mental e Bem-Estar no Trabalho
+        </h2>
+        <p class="text-gray-600 mb-8 text-xs sm:text-sm">
+            Por favor, insira todos os seus dados.
         </p>
 
-        <!-- Informações Pessoais -->
-        <h3 class="text-green-600 font-semibold mb-4">Informações Pessoais</h3>
+        <h3 class="text-primaria font-semibold mb-4 text-base sm:text-lg">
+          Informações Pessoais
+        </h3>
         
-        <!-- BLOCO DE MENSAGENS -->
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-        <!-- FIM DO BLOCO DE MENSAGENS -->
-
-        <form action="{% url 'cadastrar_colaborador' %}" method="post">
-            {% csrf_token %}            
+        {% if messages %}
+            <ul class="messages mb-4 space-y-2">
+                {% for message in messages %}
+                    <li class="{{ message.tags }} p-3 rounded-lg bg-red-100 text-red-800 border border-red-200 text-sm">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="{% url 'cadastrar_colaborador' %}" method="post" class="space-y-6">
+            {% csrf_token %}          
             <script src="https://unpkg.com/imask"></script>
 
-            <!-- Grid dos campos -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Nome *</label>
+                    <label for="nome" class="block text-gray-700 font-medium mb-1">Nome *</label>
                     <input id="nome" type="text" name="nome_completo" placeholder="Digite seu nome" required
-                            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                           class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                 </div>  
-                <!-- Nome -->
+                
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">CPF *</label>
+                    <label for="cpf" class="block text-gray-700 font-medium mb-1">CPF *</label>
                     <input id="cpf" type="text" name="cpf" placeholder="Digite seu CPF" required
-                            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                           class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                 </div>  
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Sexo *</label>
-                    <select name="sexo" required
-                            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="sexo" class="block text-gray-700 font-medium mb-1">Sexo *</label>
+                    <select id="sexo" name="sexo" required
+                            class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="F">Feminino</option>
                         <option value="M">Masculino</option>
@@ -82,23 +77,22 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Data de nascimento *</label>
-                    <input id="nascimento" type="text" name="nascimento" 
-                    placeholder="DD/MM/AAAA" required 
+                    <label for="nascimento" class="block text-gray-700 font-medium mb-1">Data de nascimento *</label>
+                    <input id="nascimento" type="text" name="nascimento"  
+                    placeholder="DD/MM/AAAA" required  
                     pattern="\d{2}/\d{2}/\d{4}"
-                    class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                 </div>
             
-                <!-- E-mail -->
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">E-mail *</label>
-                    <input type="email" name="email" placeholder="seu.email@hospital.com" required
-                        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="email" class="block text-gray-700 font-medium mb-1">E-mail *</label>
+                    <input id="email" type="email" name="email" placeholder="seu.email@exemplo.com" required
+                           class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Escolaridade *</label>
-                    <select name="escolaridade"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="escolaridade" class="block text-gray-700 font-medium mb-1">Escolaridade *</label>
+                    <select id="escolaridade" name="escolaridade" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="medio">Até Ensino Médio</option>
                         <option value="sup_inc">Superior Incompleto</option>
@@ -108,8 +102,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Estado Civil *</label>
-                    <select name="estado_civil"  required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="estado_civil" class="block text-gray-700 font-medium mb-1">Estado Civil *</label>
+                    <select id="estado_civil" name="estado_civil" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="solteiro">Solteiro(a)</option>
                         <option value="casado">Casado(a) / União Estável</option>
@@ -119,8 +113,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Cargo *</label>
-                    <select name="cargo" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="cargo" class="block text-gray-700 font-medium mb-1">Cargo *</label>
+                    <select id="cargo" name="cargo" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="Cuidador(a)">Cuidador(a)</option>
                         <option value="Enfermeiro(a)">Enfermeiro(a)</option>
@@ -140,8 +134,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Local de Trabalho *</label>
-                    <select name="local_trabalho" required  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="local_trabalho" class="block text-gray-700 font-medium mb-1">Local de Trabalho *</label>
+                    <select id="local_trabalho" name="local_trabalho" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="Hospital Santa Efigênia">Hospital Santa Efigênia</option>
                         <option value="Hospital Memorial Pernambuco">Hospital Memorial Pernambuco</option>
@@ -177,8 +171,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Tempo na Unicoop *</label>
-                    <select name="tempo_unicoop" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="tempo_unicoop" class="block text-gray-700 font-medium mb-1">Tempo na Unicoop *</label>
+                    <select id="tempo_unicoop" name="tempo_unicoop" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
                         <option value="6a2">6 meses a 2 anos</option>
@@ -188,8 +182,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Tempo na função atual *</label>
-                    <select name="tempo_funcao" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="tempo_funcao" class="block text-gray-700 font-medium mb-1">Tempo na função atual *</label>
+                    <select id="tempo_funcao" name="tempo_funcao" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="ate6">Até 6 meses</option>
                         <option value="6a2">6 meses a 2 anos</option>
@@ -199,8 +193,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Cidade *</label>
-                    <select name="cidade" required class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500">
+                    <label for="cidade" class="block text-gray-700 font-medium mb-1">Cidade *</label>
+                    <select id="cidade" name="cidade" required class="w-full border-gray-300 border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <option value="">Selecione...</option>
                         <option value="Maceió">Maceió</option>
                         <option value="Fortaleza">Fortaleza</option>
@@ -223,12 +217,9 @@
                     </select>
                 </div>
 
-            </div> <!-- fim da grid -->
-
-            <!-- Botão dentro do form, mas fora da grid -->
-            <div class="text-center mt-10">
+            </div> <div class="flex justify-center pt-4">
                 <button type="submit"
-                    class="text-white px-6 py-3 rounded-md font-medium flex items-center space-x-2"style="background-color:#038554;">
+                        class="w-full sm:w-auto bg-primaria hover:opacity-90 text-white px-8 py-3 rounded-lg font-medium text-center transition-opacity duration-200">
                     Começar questionário
                 </button>
             </div>
@@ -237,43 +228,20 @@
 
     <script>
         // Máscara para CPF (000.000.000-00)
-        IMask(document.getElementById('cpf'), {
-            mask: '000.000.000-00'
-        });
+        IMask(document.getElementById('cpf'), { mask: '000.000.000-00' });
 
         // Máscara para Data (DD/MM/AAAA)
-        IMask(document.getElementById('nascimento'), {
-            mask: '00/00/0000'
-        });
-
-        IMask(document.getElementById('email'), {
-            mask: '/^\S*@?\S*$/'
-        });
-
-        // Função toggleResposta
-        function toggleResposta(id, mostrar) {
-            const campo = document.getElementById(id);
-            if (mostrar) {
-                campo.classList.remove("hidden");
-            } else {
-                campo.classList.add("hidden");
-            }
-        }
+        IMask(document.getElementById('nascimento'), { mask: '00/00/0000' });
     </script>
     <script>
-  function bloqueiaVoltar() {
-      // Empurra uma nova entrada fake no histórico
-      window.history.pushState(null, "", window.location.href);
-  }
-
-  // Executa assim que a página carregar
-  bloqueiaVoltar();
-
-  // Sempre que o usuário tentar voltar → bloqueia + reempurra
-  window.addEventListener("popstate", function () {
-      alert("🚫 Você não pode voltar para a página anterior.");
+      function bloqueiaVoltar() {
+          window.history.pushState(null, "", window.location.href);
+      }
       bloqueiaVoltar();
-  });
-</script>
+      window.addEventListener("popstate", function () {
+          alert("🚫 Você não pode voltar para a página anterior.");
+          bloqueiaVoltar();
+      });
+    </script>
 </body>
 </html>
