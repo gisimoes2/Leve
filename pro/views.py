@@ -369,7 +369,7 @@ def carregar_planilha():
     """
     Lê a planilha de colaboradores (apenas a aba 'TODOS') e devolve uma lista de dicts.
     """
-    caminho = os.path.join(settings.BASE_DIR, "dados", "colaboradores.xlsx")
+    caminho = os.path.join(settings.BASE_DIR, "dados", "colaboradoresAlterados.xlsx")
     
     # Lê apenas a aba 'TODOS'
     df = pd.read_excel(caminho, sheet_name="TODOS", dtype=str)  # tudo como string para evitar problema no CPF
